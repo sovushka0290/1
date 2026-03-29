@@ -8,7 +8,7 @@
 
     const CONFIG = Object.freeze({
         API_BASE: (window.location.hostname === 'localhost' || window.location.hostname === '')
-            ? 'http://localhost:8000'
+            ? 'https://ngrok.com/docs/errors/err_ngrok_4018'
             : '/api',
         POLL_INTERVAL_MS: 5000,
         B2B_KEY: 'PQ_LIVE_DEMO_SECRET',
