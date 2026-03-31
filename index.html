@@ -22,43 +22,105 @@
             position: relative; overflow: hidden; height: 720px; padding: 4.5rem 3rem; border-radius: 48px; 
             background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
             border: 1px solid rgba(255, 255, 255, 0.1); 
-            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch;
             opacity: 0.8; transform-style: preserve-3d;
-            z-index: 5;
+            z-index: 5; will-change: transform, opacity, background; cursor: pointer;
         }
+
+        .card-content { display: flex; flex-direction: column; flex-grow: 1; transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1); margin-top: 250px; }
 
         /* Initially Stealth Items */
         .card-content > *:not(.card-price-wrap) {
-            opacity: 0; transform: translateY(40px) translateZ(50px); filter: blur(20px);
-            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0; transform: translateY(20px); filter: blur(20px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
         }
         .card-price-wrap { 
-            opacity: 1; transform: scale(1.4) translateZ(100px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
-            color: rgba(0,0,0,0.8); flex-grow: 0; margin: 0;
+            transition: all 0.5s cubic-bezier(0.2, 0, 0, 1);
+            margin: 0 !important;
+            display: flex; align-items: baseline; justify-content: center; gap: 8px;
+            z-index: 10;
         }
 
-        .pricing-grid-v7:hover .iridescent-card { opacity: 0.2; transform: scale(0.9) translateZ(-100px); filter: blur(5px); }
+        .pricing-grid-v7:hover .iridescent-card { opacity: 0.2; transform: scale(0.95); filter: blur(5px); }
 
         .iridescent-card:hover { 
-            transform: translateY(-20px) scale(1.05) rotateX(10deg) rotateY(5deg) !important; 
-            background: rgba(255, 255, 255, 0.08); 
+            transform: translateY(-20px) scale(1.05) rotateX(8deg) rotateY(8deg); 
+            background: rgba(255, 255, 255, 0.05); 
             backdrop-filter: blur(40px) saturate(150%); -webkit-backdrop-filter: blur(40px) saturate(150%);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5); 
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.05), inset 0 0 20px rgba(255,255,255,0.2); 
             opacity: 1 !important; z-index: 100; filter: blur(0) !important;
-            justify-content: flex-start; align-items: flex-start;
         }
 
-        .iridescent-card:hover .card-content > * { opacity: 1; transform: translateY(0) translateZ(0); filter: blur(0); }
-        .iridescent-card:hover .card-price-wrap { transform: scale(1) translateZ(0); margin-bottom: 2rem; }    /* ═══════════════════════════════════════
-           ABOUT MODAL — Nomad Cyberpunk
-           ═══════════════════════════════════════ */
+        .iridescent-card:hover .card-content { margin-top: 0; }
+
+        .iridescent-card:hover .card-title-v8 { color: #000; text-shadow: 0 0 1px rgba(0,0,0,0.1); }
+        .iridescent-card:hover .card-price-val { color: #000; }
+        .iridescent-card:hover .card-features-v8 li { color: #111; font-weight: 700; }
+
+
+        .iridescent-card:hover .card-content > * { opacity: 1; transform: translateY(0) translateZ(0); filter: blur(0); pointer-events: auto;}
+        .iridescent-card:hover .card-price-wrap {
+            margin: 1.5rem 0 !important;
+            margin-top: 2rem !important;
+        }
+        
+        .card-price-val { font-size: 3.5rem; font-weight: 800; font-family: 'Space Grotesk', sans-serif;}
+
+        .card-price-val.accent-price {
+            background: linear-gradient(135deg, #1D4ED8 0%, #8B5CF6 100%);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .btn-card-v8 {
+            width: fit-content; min-width: 220px; padding: 14px 34px; border-radius: 50px; 
+            font-weight: 800; font-size: 0.9rem; margin: 0 auto;
+            text-align: center; cursor: pointer; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            font-family: 'Space Grotesk', sans-serif; border: 1px solid rgba(255, 255, 255, 0.2); 
+            letter-spacing: 1.5px; text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), inset 0 0 10px rgba(255,255,255,0.2);
+            color: #0F172A; position: relative; overflow: hidden;
+            z-index: 20; display: block;
+        }
+
+        .btn-card-v8:hover {
+            transform: translateY(-8px) scale(1.05);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), inset 0 0 20px rgba(255,255,255,0.5);
+            color: #000;
+        }
+
+        /* Unique mini-glass chip for BIY (Highlighted) */
+        .btn-primary-v8 { 
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            color: #1D4ED8;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.1), inset 0 0 15px rgba(255,255,255,0.3);
+        }
+        .btn-primary-v8:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.4));
+            border-color: rgba(59, 130, 246, 0.8);
+            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.2), inset 0 0 20px rgba(255,255,255,0.5);
+        }
+
+        .btn-card-v8::before {
+            content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 60%);
+            opacity: 0; transition: opacity 0.4s; pointer-events: none;
+        }
+        .btn-card-v8:hover::before { opacity: 1; }
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.4); 
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             z-index: 2000; opacity: 0; pointer-events: none; transition: 0.6s ease;
         }
+    /* ═══════════════════════════════════════
+           ABOUT MODAL — Nomad Cyberpunk
+           ═══════════════════════════════════════ */
         .modal-overlay.active { opacity: 1; pointer-events: all; }
         
         .about-modal {
@@ -420,7 +482,7 @@
                             <li>Single AI-Biy Node (Base checks)</li>
                             <li>Community Discord Support</li>
                         </ul>
-                        <button class="btn-card-v8 btn-ghost-v8">Start Building</button>
+                        <button class="btn-card-v8 btn-ghost-v8" onclick="selectTier('wanderer')">Start Building</button>
                     </div>
                 </div>
 
@@ -431,7 +493,7 @@
                         <h3 class="card-title-v8">BIY</h3>
                         <p class="card-subtitle-v8">Corporate ESG compliance engine.</p>
                         <div class="card-price-wrap">
-                            <span class="card-price-val">$500</span>
+                            <span class="card-price-val accent-price">$500</span>
                             <span class="card-price-period">/mo</span>
                         </div>
                         <ul class="card-features-v8">
@@ -440,7 +502,8 @@
                             <li>Multi-Agent Consensus (3 AI Nodes)</li>
                             <li>Live Solscan TX Dashboard</li>
                         </ul>
-                        <button class="btn-card-v8 btn-primary-v8">Upgrade to Biy</button>
+                        <button class="btn-card-v8 btn-primary-v8" onclick="selectTier('biy')">SCALE UP</button>
+
                     </div>
                 </div>
 
@@ -450,15 +513,16 @@
                         <h3 class="card-title-v8">KHAN</h3>
                         <p class="card-subtitle-v8">For states & global enterprises.</p>
                         <div class="card-price-wrap">
-                            <span class="card-price-val">Custom</span>
+                            <span class="card-price-val">SCALE</span>
                         </div>
+
                         <ul class="card-features-v8">
                             <li>Unlimited Verifications</li>
                             <li>Dedicated Validator Node</li>
                             <li>Custom AI-Biy Fine-tuning</li>
                             <li>24/7 Dedicated SLA Support</li>
                         </ul>
-                        <button class="btn-card-v8 btn-dark-v8">Contact Sales</button>
+                        <button class="btn-card-v8 btn-dark-v8" onclick="selectTier('khan')">Contact Sales</button>
                     </div>
                 </div>
 

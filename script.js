@@ -258,4 +258,25 @@
         console.log("%c⟡ ProtoQol B2B MVP Bridge Active", "color: #00E5FF; font-weight: bold;");
     });
 
+    /**
+     * Foundation for Tier selection and tab redirection
+     */
+    window.selectTier = function(tier) {
+        console.log(`[SUBSCRIPTION_WIZARD] Selected Tier: ${tier}`);
+        
+        switch(tier) {
+            case 'biy':
+                window.location.href = 'dashboard.html';
+                break;
+            case 'wanderer':
+                window.location.hash = 'how-it-works';
+                break;
+            case 'khan':
+                window.location.href = 'mailto:founders@protoqol.pro';
+                break;
+            default:
+                break;
+        }
+    };
+
 })();

@@ -1,113 +1,146 @@
 import time
 import hashlib
-from fastapi import APIRouter, Form, HTTPException, Query
-from solders.pubkey import Pubkey
-from anchorpy import Context
+import asyncio
+from fastapi import APIRouter, Form, HTTPException, Query, BackgroundTasks, Depends, Request
 
-from config import ACTIVE_MISSIONS, VALID_API_KEYS, MASTER_BIY, PROTOQOL_PROGRAM_ID, log
-from core import ai_engine, solana_client, state
+from core.config import SERVICE_STATIC_CAMPAIGNS, PROTOCOL_API_WHITELIST, log, MASTER_AUTHORITY_KEY
+from core import ai_engine, solana_client, state, database, guardian, webhooks
 
-router = APIRouter(prefix="", tags=["Oracle"])
+router = APIRouter(prefix="", tags=["Protocol_Engine"])
 
 @router.get("/", tags=["System"])
 async def root():
     return {
-        "protocol": "ProtoQol_v3",
+        "protocol": "ProtoQol_v4_Decentralized",
         "status": "online",
-        "oracle_nodes": 4,
+        "oracle_nodes": 3,
         "chain": "Solana Devnet",
         "total_events": len(state.GLOBAL_PULSE),
         "boot_time": state.PROTOCOL_STATS["boot_time"],
     }
 
-@router.get("/protocol_pulse", tags=["Network"])
-async def get_pulse(limit: int = Query(5, ge=1, le=20)):
-    return sorted(state.GLOBAL_PULSE[-limit:], key=lambda x: x['ts'], reverse=True)
+async def async_consensus_routine(nomad_pubkey, deed_id, mission_id, points, agent_verdicts, integrity_hash, campaign_id=None):
+    """
+    Decentralized Workflow:
+    1. Propose Deed (Escrow funds)
+    2. Broadcast for Biy Oracles to vote
+    3. Consensus reached -> Auto release
+    """
+    try:
+        log.info(f"[DECENTRALIZED_PULSE] Starting consensus for {deed_id}")
+        
+        # 1. PROPOSE (On behalf of Foundation/B2B Proposer)
+        propose_tx = await solana_client.propose_deed_on_chain(
+            deed_id, nomad_pubkey, MASTER_AUTHORITY_KEY, mission_id, points
+        )
+        
+        # 2. VOTE (Sequential Agent Submission)
+        last_vote_tx = None
+        for agent_v in agent_verdicts:
+            node_name = agent_v.get("node")
+            verdict_bool = agent_v.get("verdict") == "ADAL"
+            last_vote_tx = await solana_client.vote_deed_on_chain(
+                deed_id, node_name, verdict_bool, nomad_pubkey, MASTER_AUTHORITY_KEY.pubkey()
+            )
+            # Small delay to prevent RPC congestion
+            await asyncio.sleep(0.5)
 
-@router.get("/protocol_stats", tags=["Network"])
-async def get_stats():
-    return state.PROTOCOL_STATS
+        # 3. Finalization Monitor
+        chain_state = await solana_client.confirm_transaction_status(last_vote_tx)
+        
+        # Update persistence layer
+        database.update_deed_status(integrity_hash, last_vote_tx, chain_state)
+        
+        # Update Global Pulse
+        for event in state.GLOBAL_PULSE:
+            if event.get("integrity_hash") == integrity_hash:
+                event["tx_hash"] = last_vote_tx
+                event["chain_status"] = chain_state
+                break
+        
+        log.info(f"[DECENTRALIZED_PULSE] Protocol Resolution: {deed_id} -> {chain_state}")
+
+        # Fire Webhooks
+        if campaign_id:
+            camp = database.get_campaign_by_id(campaign_id)
+            if camp and camp.get('webhook_url'):
+                webhook_payload = {
+                    "event": "CONSENSUS_REACHED",
+                    "deed_id": deed_id,
+                    "nomad_id": str(nomad_pubkey),
+                    "chain_status": chain_state,
+                    "tx_hash": last_vote_tx
+                }
+                await webhooks.fire_webhook(camp['webhook_url'], webhook_payload)
+
+    except Exception as e:
+        log.error(f"[DECENTRALIZED_CORE] Consensus disruption: {e}")
+        database.update_deed_status(integrity_hash, "FAILED", "failed")
 
 @router.post("/verify", tags=["Oracle"])
 async def ritual_verify(
+    background_tasks: BackgroundTasks,
+    request: Request,
     description: str = Form(...),
     telegram_id: str = Form("UnknownNomad"),
     mission_id: str = Form(None),
+    campaign_id: int = Form(None),
     api_key: str = Form("PQ_DEV_TEST_2026"),
+    _guard: bool = Depends(guardian.rate_limit_check)
 ):
-    if api_key not in VALID_API_KEYS:
-        raise HTTPException(status_code=401, detail="Unauthorized Oracle Access.")
+    if api_key not in PROTOCOL_API_WHITELIST:
+        raise HTTPException(status_code=401, detail="Unauthorized Protocol Access.")
 
-    if not mission_id or mission_id not in ACTIVE_MISSIONS:
-        raise HTTPException(status_code=400, detail="Unknown Mission mandate.")
-
-    mission_info = ACTIVE_MISSIONS[mission_id]
-    log.info(f"[REQUEST] mission={mission_id}, nomad={telegram_id[:12]}…")
-
-    # 1. AI CONSENSUS
-    ai_res = await ai_engine.analyze_deed(description, mission_info)
+    mission_info = SERVICE_STATIC_CAMPAIGNS.get(mission_id, {"requirements": "General Engine Mandate", "foundation_id": "GLOBAL", "theme_accent": "#00FFA3", "impact_weight": 1.0})
+    
+    if campaign_id:
+        camp_data = database.get_campaign_by_id(campaign_id)
+        if camp_data:
+            mission_info["requirements"] = camp_data["requirements"]
+            mission_info["foundation_id"] = camp_data["fund_name"]
+    
+    # 1. AI CONSENSUS (Multi-Agent Analysis)
+    ai_res = await ai_engine.analyze_deed(description, mission_info, campaign_id=campaign_id)
     verdict = ai_res.get("verdict", "ARAM")
+    
+    if verdict == "SYSTEM_ERROR":
+        raise HTTPException(status_code=503, detail="Protocol Brain Desynced.")
+
     wisdom = ai_res.get("wisdom", "...")
     raw_score = float(ai_res.get("impact_score", 0))
-
     weighted_score = raw_score * mission_info.get("impact_weight", 1.0)
-    points = int(weighted_score * 100) if verdict == "ADAL" else 0
+    
+    points = 0
+    if verdict == "ADAL":
+        if campaign_id:
+            camp_data = database.get_campaign_by_id(campaign_id)
+            points = camp_data["reward"] if camp_data else int(weighted_score * 100)
+        else:
+            points = int(weighted_score * 100)
 
-    # 2. PQ-STANDARD INTEGRITY HASH
-    content_payload = f"{description}|{mission_id}|{telegram_id}|{int(time.time())}"
+    # 2. PQ-INTEGRITY
+    deed_id = f"D_{int(time.time()*1000)}"
+    content_payload = f"{description}|{mission_id}|{telegram_id}|{deed_id}"
     integrity_hash = hashlib.sha256(content_payload.encode()).hexdigest()[:16]
 
-    # 3. NOMAD SHADOW WALLET
+    # 3. NOMAD WALLET
     user_kp = solana_client.get_nomad_wallet(telegram_id)
-    tx_hash = "ON_CHAIN_ETCHING_FAILED"
+    
+    # 4. DECENTRALIZED EXECUTION QUEUE
+    agent_verdicts = ai_res.get("consensus_logs", [])
+    
+    background_tasks.add_task(
+        async_consensus_routine,
+        user_kp.pubkey(), 
+        deed_id, 
+        mission_id, 
+        points, 
+        agent_verdicts,
+        integrity_hash,
+        campaign_id=campaign_id
+    )
 
-    # 4. ON-CHAIN GASLESS ANCHOR CALL
-    if verdict == "ADAL":
-        if not solana_client.ANCHOR_PROGRAM:
-            log.warning("[ANCHOR_NODE] Target Program disconnected. Emulating finality.")
-            tx_hash = f"SIM_ANCHOR_{int(time.time()*100)}"
-        else:
-            try:
-                deed_id = f"D_{int(time.time()*1000)}"
-                nomad_pubkey = user_kp.pubkey()
-
-                deed_pda, _ = Pubkey.find_program_address(
-                    [b"deed", bytes(nomad_pubkey), deed_id.encode("utf-8")],
-                    PROTOQOL_PROGRAM_ID
-                )
-                profile_pda, _ = Pubkey.find_program_address(
-                    [b"profile", bytes(nomad_pubkey)],
-                    PROTOQOL_PROGRAM_ID
-                )
-
-                log.info(f"[ANCHOR_NODE] Routing transaction. Payer: {MASTER_BIY.pubkey()}")
-                
-                # Check for the global program object correctly
-                tx = await solana_client.ANCHOR_PROGRAM.rpc["etch_deed"](
-                    nomad_pubkey,
-                    deed_id,
-                    mission_id,
-                    points,
-                    verdict,
-                    integrity_hash,
-                    ctx=Context(
-                        accounts={
-                            "deed_record": deed_pda,
-                            "nomad_profile": profile_pda,
-                            "oracle": MASTER_BIY.pubkey(),
-                            "system_program": Pubkey.from_string("11111111111111111111111111111111"),
-                        },
-                        signers=[MASTER_BIY]
-                    )
-                )
-                tx_hash = str(tx)
-                log.info(f"[ANCHOR_TX] Signature: {tx_hash[:24]}...")
-                
-            except Exception as e:
-                log.error(f"[ANCHOR_TX] CRITICAL NETWORK ERROR: {e}")
-                raise HTTPException(status_code=503, detail="SOLANA_NETWORK_ERROR")
-
-    # 5. GLOBAL PULSE UPDATE
+    # 5. UI PULSE
     new_event = {
         "ts": time.time(),
         "mission_id": mission_id,
@@ -116,16 +149,18 @@ async def ritual_verify(
         "impact_points": points,
         "wisdom": wisdom,
         "integrity_hash": integrity_hash,
-        "tx_hash": tx_hash,
+        "tx_hash": "CRYSTALLIZING",
+        "chain_status": "voting",
         "wallet_address": str(user_kp.pubkey()),
         "accent": mission_info['theme_accent'],
+        "ai_dialogue": agent_verdicts 
     }
     state.GLOBAL_PULSE.append(new_event)
+    database.save_deed(new_event, mission_info)
 
     state.PROTOCOL_STATS["total_audits"] += 1
     if verdict == "ADAL":
         state.PROTOCOL_STATS["adal_count"] += 1
-        state.PROTOCOL_STATS["total_impact_score"] += raw_score
     else:
         state.PROTOCOL_STATS["aram_count"] += 1
 

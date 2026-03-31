@@ -1,29 +1,27 @@
 import time
-import asyncio
 import httpx
 from fastapi import APIRouter
-from config import GEMINI_API_KEYS, RPC_URL, log
-from core import database
-import state
+from core.config import PROTOCOL_AI_KEYS, RPC_URL, log, VERSION, ENGINE_NAME
+from core import database, state
 
-router = APIRouter(prefix="/api/v1", tags=["System"])
+router = APIRouter(prefix="/api/v1", tags=["System_Engine"])
 
 @router.get("/health")
 @router.get("/pulse")
 async def health_check():
     """
     ⚡ Enterprise-Grade Infrastructure Health Report
-    Performs real-time pings to Database, Solana, and AI Oracle Pool.
+    Performs real-time pings to Engine Database, Solana RPC, and AI Oracle Pool.
     """
     
-    # 1. Database Check
+    # 1. Database Check (Engine Local)
     db_status = "ONLINE"
     try:
-        database.get_stats() # Basic select
+        database.get_stats()
     except Exception:
         db_status = "ERROR"
 
-    # 2. Solana RPC Check (Lightning-fast head check)
+    # 2. Blockchain Adapter Check (Solana RPC)
     solana_status = "CONNECTED"
     try:
         async with httpx.AsyncClient() as client:
@@ -35,36 +33,36 @@ async def health_check():
     except Exception:
         solana_status = "TIMEOUT"
 
-    # 3. AI Pool Check
-    pool_size = len(GEMINI_API_KEYS)
+    # 3. AI Consensus Engine Pool Check
+    pool_size = len(PROTOCOL_AI_KEYS)
     ai_status = f"{pool_size}/{pool_size} ONLINE" if pool_size > 0 else "OFFLINE"
 
-    # 4. Uptime Calculation
+    # 4. Engine Uptime Calculation
     uptime_sec = int(time.time() - state.PROTOCOL_STATS["boot_time"])
     hours, remainder = divmod(uptime_sec, 3600)
     minutes, seconds = divmod(remainder, 60)
     uptime_str = f"{hours}h {minutes}m {seconds}s"
 
     return {
+        "engine": ENGINE_NAME,
+        "version": VERSION,
         "status": "operational",
         "timestamp": time.time(),
         "uptime": uptime_str,
-        "components": {
-            "database": {
+        "infrastructure": {
+            "persistence": {
                 "status": db_status,
-                "engine": "SQLite MVP",
-                "persistence": "LOCAL_FILE"
+                "engine": "SQLite WAL-Mode",
+                "storage": "LOCAL_FS"
             },
-            "solana_network": {
+            "blockchain": {
                 "status": solana_status,
-                "cluster": "Devnet",
-                "endpoint": RPC_URL
+                "cluster": "Solana Devnet",
+                "interface": "Anchor 0.30"
             },
-            "ai_oracle_pool": {
+            "ai_consensus_pool": {
                 "status": ai_status,
-                "model": "Gemini-2.0-Flash",
                 "concurrency": "Multi-agent"
             }
-        },
-        "version": "3.8.2-Enterprise"
+        }
     }

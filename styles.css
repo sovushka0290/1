@@ -935,17 +935,19 @@ button, .btn { font-family: var(--font-main); cursor: pointer; border: none; out
         .btn-filled-v6:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
 
         .pricing-window-v7 { width: 100%; max-width: 1300px; padding: 40px; margin: 0 auto; }
-        .pricing-grid-v7 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; }
         .pricing-grid-v7 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem; perspective: 2000px; }
         
         .iridescent-card { 
             position: relative; overflow: hidden; height: 720px; padding: 4.5rem 3rem; border-radius: 48px; 
             background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
             border: 1px solid rgba(255, 255, 255, 0.1); 
-            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch;
             opacity: 0.8; transform-style: preserve-3d;
+            z-index: 5; will-change: transform, opacity, background; cursor: pointer;
         }
+
+        .card-content { display: flex; flex-direction: column; flex-grow: 1; transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1); margin-top: 250px; }
 
         /* Subtle Shimmer Effect */
         .iridescent-card::before {
@@ -956,28 +958,32 @@ button, .btn { font-family: var(--font-main); cursor: pointer; border: none; out
 
         /* Initially Stealth Items */
         .card-content > *:not(.card-price-wrap) {
-            opacity: 0; transform: translateY(40px) translateZ(50px); filter: blur(20px);
-            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0; transform: translateY(-20px); filter: blur(20px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
         }
         .card-price-wrap { 
-            opacity: 1; transform: scale(1.4) translateZ(100px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
-            color: rgba(0,0,0,0.8); flex-grow: 0; margin: 0;
+            opacity: 1; transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+            color: #000; flex-grow: 0; margin: 0;
+            display: flex; align-items: baseline; justify-content: center; gap: 8px;
         }
 
-        .pricing-grid-v7:hover .iridescent-card { opacity: 0.2; transform: scale(0.9) translateZ(-100px); filter: blur(5px); }
+        .pricing-grid-v7:hover .iridescent-card { opacity: 0.2; transform: scale(0.95); filter: blur(5px); }
 
         .iridescent-card:hover { 
-            transform: translateY(-20px) scale(1.05) rotateX(10deg) rotateY(5deg) !important; 
-            background: rgba(255, 255, 255, 0.6); 
-            backdrop-filter: blur(80px) saturate(200%); -webkit-backdrop-filter: blur(80px) saturate(200%);
-            border: 1px solid rgba(255, 255, 255, 1);
-            box-shadow: 0 60px 120px rgba(0, 100, 255, 0.1), 0 0 40px rgba(139, 92, 246, 0.1); 
+            transform: translateY(-20px) scale(1.05) rotateX(8deg) rotateY(8deg); 
+            background: rgba(255, 255, 255, 0.05); 
+            backdrop-filter: blur(40px) saturate(150%); -webkit-backdrop-filter: blur(40px) saturate(150%);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.05), inset 0 0 20px rgba(255,255,255,0.2); 
             opacity: 1 !important; z-index: 100; filter: blur(0) !important;
-            justify-content: flex-start; align-items: flex-start;
         }
+        
+        .iridescent-card:hover .card-content { margin-top: 0; }
 
-        .iridescent-card:hover .card-content > * { opacity: 1; transform: translateY(0) translateZ(0); filter: blur(0); }
-        .iridescent-card:hover .card-price-wrap { transform: scale(1) translateZ(0); margin-bottom: 2rem; }
+        .iridescent-card:hover .card-content > * { opacity: 1; transform: translateY(0) translateZ(0); filter: blur(0); pointer-events: auto; }
+        .iridescent-card:hover .card-price-wrap { margin-top: 1rem; margin-bottom: 2rem; justify-content: flex-start; }
+
 
         /* Ultra-Smooth Staggered Wave Reveal */
         .iridescent-card:hover .card-title-v8      { transition-delay: 0.1s; }
@@ -1002,6 +1008,7 @@ button, .btn { font-family: var(--font-main); cursor: pointer; border: none; out
             border-radius: 48px; padding: 2px; 
             background: linear-gradient(135deg, #00F2FE, #8B5CF6, #FF00E5);
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor; mask-composite: exclude;
             opacity: 0; transition: opacity 1s ease; pointer-events: none;
         }
@@ -1009,9 +1016,9 @@ button, .btn { font-family: var(--font-main); cursor: pointer; border: none; out
         
         /* Middle Card Highlight (BIY) */
         .card-biy-v8 { 
-            background: linear-gradient(135deg, rgba(220, 240, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.4);
-            box-shadow: inset 0 2px 10px rgba(255,255,255,1), 0 30px 60px -10px rgba(37, 99, 235, 0.15);
+            background: rgba(255, 255, 255, 0.05); 
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            box-shadow: 0 30px 60px -10px rgba(37, 99, 235, 0.1);
         }
         .card-biy-v8:hover {
             border-color: rgba(59, 130, 246, 0.6);
@@ -1034,31 +1041,64 @@ button, .btn { font-family: var(--font-main); cursor: pointer; border: none; out
         .card-biy-v8 .card-title-v8 { color: #1D4ED8; text-shadow: none; }
         .card-subtitle-v8 { font-size: 0.95rem; color: rgba(15, 23, 42, 0.6); margin-bottom: 2.5rem; min-height: 48px; line-height: 1.5; font-weight: 500;}
         
-        .card-price-wrap { margin-bottom: 2.5rem; display: flex; align-items: baseline; justify-content: flex-start; gap: 8px; }
+        .card-price-wrap { margin-bottom: 2.5rem; display: flex; align-items: baseline; justify-content: center; gap: 8px; }
         .card-price-val { font-family: 'Space Grotesk', 'JetBrains Mono', monospace; font-size: 3.5rem; font-weight: 800; color: #000; letter-spacing: -2px; line-height: 1;}
+        .card-price-val.accent-price {
+            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
         .card-price-period { font-size: 1.1rem; color: rgba(15, 23, 42, 0.5); font-weight: 700; }
         
         .card-features-v8 { list-style: none; padding: 0; margin: 0 0 3.5rem 0; flex-grow: 1; }
         .card-features-v8 li { display: flex; align-items: flex-start; gap: 14px; font-size: 1rem; color: #334155; margin-bottom: 1.2rem; line-height: 1.5; font-weight: 600;}
-        .card-features-v8 li::before { content: '✦'; color: rgba(15, 23, 42, 0.3); font-size: 1.1rem; margin-top: 2px;}
-        .card-biy-v8 .card-features-v8 li::before { color: #3B82F6; text-shadow: none; }
-
         .btn-card-v8 {
-            width: 100%; padding: 18px; border-radius: 20px; font-weight: 700; font-size: 1.05rem;
-            text-align: center; cursor: pointer; transition: 0.3s; font-family: 'Space Grotesk', 'Inter', sans-serif; border: none; letter-spacing: 0.5px;
+            width: fit-content; min-width: 220px; padding: 14px 34px; border-radius: 50px; 
+            font-weight: 800; font-size: 0.9rem; margin: 0 auto;
+            text-align: center; cursor: pointer; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            font-family: 'Space Grotesk', sans-serif; border: 1px solid rgba(255, 255, 255, 0.2); 
+            letter-spacing: 1.5px; text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), inset 0 0 10px rgba(255,255,255,0.2);
+            color: #0F172A; position: relative; overflow: hidden;
+            z-index: 20; display: block;
         }
-        .btn-ghost-v8 { background: rgba(0,0,0,0.03); color: #0F172A; border: 1px solid rgba(0,0,0,0.1); }
-        .btn-ghost-v8:hover { background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        
-        .btn-primary-v8 {
-            background: linear-gradient(135deg, #3B82F6, #2563EB); color: #fff;
-            border: none;
-            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3), inset 0 2px 5px rgba(255,255,255,0.3);
+
+        .btn-card-v8:hover {
+            transform: translateY(-8px) scale(1.05);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), inset 0 0 20px rgba(255,255,255,0.5);
+            color: #000;
         }
-        .btn-primary-v8:hover { background: linear-gradient(135deg, #2563EB, #1D4ED8); box-shadow: 0 15px 30px rgba(37, 99, 235, 0.4); transform: translateY(-2px);}
+
+        /* Unique mini-glass chip for BIY (Highlighted) */
+        .btn-primary-v8 { 
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            color: #1D4ED8;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.1), inset 0 0 15px rgba(255,255,255,0.3);
+        }
+        .btn-primary-v8:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.4));
+            border-color: rgba(59, 130, 246, 0.8);
+            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.2), inset 0 0 20px rgba(255,255,255,0.5);
+        }
+        .btn-ghost-v8 { 
+            background: rgba(0,0,0,0.03); color: #0F172A; border: 1px solid rgba(0,0,0,0.1); 
+        }
+        .btn-ghost-v8:hover { 
+            background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+        }
         
-        .btn-dark-v8 { background: #0F172A; color: #fff; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 20px rgba(15, 23, 42, 0.2); }
-        .btn-dark-v8:hover { background: #1E293B; transform: translateY(-2px); box-shadow: 0 15px 30px rgba(15, 23, 42, 0.3); }
+        .btn-dark-v8 { 
+            background: #0F172A; color: #fff; border: 1px solid rgba(255,255,255,0.1); 
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.2); 
+        }
+        .btn-dark-v8:hover { 
+            background: #1E293B; transform: translateY(-8px) scale(1.05); 
+            box-shadow: 0 15px 30px rgba(15, 23, 42, 0.3); 
+        }
 
 /* ────────── AUDIT ENGINE (MVP CORE) ────────── */
 .audit-engine-window { padding: 0 !important; border-radius: 40px; overflow: hidden; background: #06080D; }
