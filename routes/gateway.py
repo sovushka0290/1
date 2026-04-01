@@ -9,33 +9,35 @@ from core import ai_engine, solana_client, state, database, auth
 
 router = APIRouter(prefix="/api/v1", tags=["B2B_Engine_Gateway"])
 
-
 async def background_settlement(
     deed_id: str, 
-    integrity_hash: str, 
-    impact_score: int, 
-    verdict: str,
-    client_id: int
+    nomad_pubkey: Pubkey, 
+    mission_id: str, 
+    points: int, 
+    agent_verdicts: list, 
+    client_id: int,
+    integrity_hash: str
 ):
-    """
-    Lean Background Settlement: One AI decision = One Solana Transaction.
-    Ensures high reliability and low latency for the hackathon.
-    """
+    """Handles heavy blockchain operations in the background to ensure fast UX."""
     try:
-        log.info(f"[BACKGROUND_SETTLEMENT] Etching final verdict for: {deed_id}")
+        log.info(f"[BACKGROUND_SETTLEMENT] Started for deed: {deed_id}")
         
-        # 1. Finalize on-chain with a single transaction
-        tx_hash = await solana_client.etch_deed_on_chain(
-            deed_id, integrity_hash, impact_score, verdict
+        # 1. Propose Deed on-chain
+        tx_hash = await solana_client.propose_deed_on_chain(
+            deed_id, nomad_pubkey, MASTER_AUTHORITY_KEY, mission_id, points
         )
         
-        if not tx_hash:
-             log.error("[BACKGROUND_SETTLEMENT] Blockchain execution failed. Check Devnet status.")
-             return
-
-        # 2. Update Credit pool & Local Registry
+        # 2. Submit Specialist Agent Votes
+        for agent_v in agent_verdicts:
+            await solana_client.vote_deed_on_chain(
+                deed_id, agent_v.get("node"), agent_v.get("verdict") == "ADAL", 
+                nomad_pubkey, MASTER_AUTHORITY_KEY.pubkey()
+            )
+        
+        # 3. Finalize locally
         database.deduct_credit(client_id)
         
+        # 4. Update TX Hash in DB
         conn = database.get_db_connection()
         conn.execute("UPDATE deeds SET tx_hash = ? WHERE integrity_hash = ?", (tx_hash, integrity_hash))
         conn.commit()
@@ -45,7 +47,6 @@ async def background_settlement(
         
     except Exception as e:
         log.error(f"[BACKGROUND_SETTLEMENT] Critical Failure: {e}")
-
 
 @router.post("/etch_deed")
 async def enterprise_etch_deed(
@@ -109,14 +110,12 @@ async def enterprise_etch_deed(
     conn.commit()
     conn.close()
 
-
     # 5. OFFLOAD HEAVY TASKS TO BACKGROUND
     if verdict == "ADAL":
         background_tasks.add_task(
             background_settlement,
-            deed_id, integrity_hash, points, verdict, client['id']
+            deed_id, user_kp.pubkey(), mission_id, points, agent_verdicts, client['id'], integrity_hash
         )
-
 
     return {
         "status": "crystalizing" if verdict == "ADAL" else "denied",
