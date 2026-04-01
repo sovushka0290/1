@@ -11,7 +11,9 @@ import io
 import csv
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
+import os
 from pydantic import BaseModel, Field, HttpUrl
 from typing import Optional
 
@@ -47,16 +49,8 @@ app = FastAPI(
 # SECURITY & CORS ENFORCEMENT
 # ═══════════════════════════════════════════════════════════════
 
-# B2B Whitelist (Production ready)
-ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "http://localhost:3002",
-    "http://localhost:8000",
-    "http://127.0.0.1:3000",
-    "https://protoqol.org",
-    "https://qaiyrym.kz"
-]
+# Production-ready CORS for public deployment (Vercel/Render)
+ALLOWED_ORIGINS = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -66,10 +60,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# [NOTE] FRONTEND & STATIC ASSET DELIVERY moved to the bottom of main.py to prevent API shadowing.
+
 @app.middleware("http")
 async def add_security_headers(request: Request, call_next):
     """
-    Ensures absolute browser security for the integrity engine.
+    Ensures absolute browser security for the integrity engine by injecting 
+    strict security headers into every HTTP response.
     """
     response = await call_next(request)
     response.headers["X-Frame-Options"] = "DENY"
@@ -81,11 +78,8 @@ async def add_security_headers(request: Request, call_next):
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
     """
-    Monitors latency for performance auditing.
+    Calculates execution latency for every request to enable performance auditing.
     """
-    if request.method == "POST":
-        print(f"DEBUG DATA: {await request.body()}")
-        
     start_time = time.time()
     response = await call_next(request)
     process_time = time.time() - start_time
@@ -98,6 +92,9 @@ async def add_process_time_header(request: Request, call_next):
 # ═══════════════════════════════════════════════════════════════
 @app.exception_handler(ProtocolError)
 async def protocol_exception_handler(request: Request, exc: ProtocolError):
+    """
+    Centralized error handling for custom ProtocolEngine exceptions.
+    """
     return JSONResponse(
         status_code=exc.code,
         content={"status": "error", "error_type": exc.__class__.__name__, "message": exc.message},
@@ -120,6 +117,9 @@ class CampaignRequest(BaseModel):
 # ═══════════════════════════════════════════════════════════════
 @app.on_event("startup")
 async def startup_event():
+    """
+    Boot sequence: Inits persistence, syncs state, and loads blockchain oracles.
+    """
     log.info(f"🚀 Booting {ENGINE_NAME} v{VERSION}...")
     
     # 0. System Pulse Init
@@ -160,6 +160,9 @@ async def startup_event():
 
 @app.on_event("shutdown")
 async def shutdown_event():
+    """
+    Safely disengages all core services and locks the database.
+    """
     log.info(f"🛑 Shutting down {ENGINE_NAME} Engine...")
     # Add any explicit connection closing here if needed
     log.info("✓ Persistence layer safety-lock engaged.")
@@ -172,6 +175,27 @@ async def shutdown_event():
 app.include_router(health.router)
 app.include_router(oracle.router)
 app.include_router(gateway.router)
+
+@app.get("/api/v1/deeds/recent", tags=["System_Engine"])
+async def get_recent_deeds_pulse():
+    """Returns the most recent 15 verification deeds with human-readable descriptions."""
+    try:
+        from core.config import SERVICE_STATIC_CAMPAIGNS
+        deeds = database.get_recent_deeds(15)
+        
+        # Enrich with mission titles for the Heartbeat Terminal
+        enriched_deeds = []
+        for d in deeds:
+            mission = SERVICE_STATIC_CAMPAIGNS.get(d['mission_id'], {})
+            enriched_deeds.append({
+                **d,
+                "description": mission.get("title", f"Protocol Verification: {d['mission_id']}")
+            })
+            
+        return {"status": "success", "deeds": enriched_deeds}
+    except Exception as e:
+        log.error(f"Failed to fetch pulse: {e}")
+        return {"status": "error", "message": str(e)}
 
 @app.get("/api/v1/campaigns", tags=["B2B_Engine"])
 async def list_campaigns():
@@ -259,6 +283,36 @@ async def export_campaign_report(campaign_id: int):
     response = StreamingResponse(iter([output.getvalue()]), media_type="text/csv")
     response.headers["Content-Disposition"] = f"attachment; filename=ProtoQol_ESG_Report_{campaign_id}.csv"
     return response
+
+# ═══════════════════════════════════════════════════════════════
+# FRONTEND & STATIC ASSET DELIVERY (Catch-All)
+# ═══════════════════════════════════════════════════════════════
+
+@app.get("/", tags=["Frontend"])
+async def read_index():
+    """Returns the main ProtoQol Landing Page."""
+    return FileResponse("index.html")
+
+@app.get("/index.html", tags=["Frontend"], include_in_schema=False)
+async def read_index_html():
+    """Redirects /index.html to the root for consistency."""
+    return FileResponse("index.html")
+
+@app.get("/{file_path:path}", tags=["Frontend"], include_in_schema=False)
+async def serve_static_fallback(file_path: str):
+    """Fallback to serve local assets (css, js, images) if they exist."""
+    # Ensure we don't accidentally serve sensitive files
+    if file_path.startswith("core") or file_path.startswith("models") or file_path.endswith(".py"):
+         raise HTTPException(status_code=403, detail="Access Denied")
+         
+    file_full_path = os.path.join(".", file_path)
+    if os.path.isfile(file_full_path):
+        return FileResponse(file_full_path)
+    
+    raise HTTPException(status_code=404, detail="Resource Not Found")
+
+# Mount /static at the end to avoid interception
+app.mount("/static", StaticFiles(directory="."), name="static")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info")

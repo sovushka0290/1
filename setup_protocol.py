@@ -24,7 +24,7 @@ async def setup_protocol():
     # 1. Initialize Protocol Stats (Global PDA)
     stats_pda, _ = Pubkey.find_program_address([b"stats"], PROTOCOL_PROGRAM_ID)
     try:
-        tx = await program.rpc["initialize_protocol"](
+        tx = await program.rpc["initializeProtocol"](
             ctx=Context(
                 accounts={
                     "stats": stats_pda,
@@ -50,11 +50,11 @@ async def setup_protocol():
         )
         
         try:
-            tx = await program.rpc["add_oracle"](
+            tx = await program.rpc["addOracle"](
                 oracle_kp.pubkey(),
                 ctx=Context(
                     accounts={
-                        "oracle_registry": oracle_reg_pda,
+                        "oracleRegistry": oracle_reg_pda,
                         "admin": MASTER_AUTHORITY_KEY.pubkey(),
                         "system_program": Pubkey.from_string("11111111111111111111111111111111"),
                     },

@@ -34,11 +34,20 @@ def init_db():
             tx_hash TEXT,
             integrity_hash TEXT,
             ai_dialogue TEXT,
+            source TEXT DEFAULT 'direct', -- 'B2B_Gateway', 'Integrity_Sandbox', etc.
             timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY(client_id) REFERENCES clients(id)
         )
     ''')
 
+    # [MIGRATION] Add missing columns to legacy deeds table
+    try:
+        cursor.execute("ALTER TABLE deeds ADD COLUMN ai_dialogue TEXT;")
+    except sqlite3.OperationalError: pass
+    try:
+        cursor.execute("ALTER TABLE deeds ADD COLUMN source TEXT DEFAULT 'direct';")
+    except sqlite3.OperationalError: pass
+    
     # 3. ESG Campaigns Table (B2B Bounties)
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS campaigns (

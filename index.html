@@ -1,267 +1,1216 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ProtoQol — ESG Integrity Engine | Ethics as a Service on Solana</title>
-    <meta name="description" content="ProtoQol transforms real-world social impact into immutable on-chain proofs. AI-powered ESG auditing for enterprises, NGOs, and governments on Solana." />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <meta name="description"
+        content="ProtoQol transforms real-world social impact into immutable on-chain proofs. AI-powered ESG auditing for enterprises, NGOs, and governments on Solana." />
     <meta name="theme-color" content="#06080D" />
     <meta property="og:title" content="ProtoQol — Nomad Cyberpunk Protocol" />
-    <meta property="og:description" content="We take real-world actions, evaluate them with AI, and crystallize them into immutable on-chain data." />
+    <meta property="og:description"
+        content="We take real-world actions, evaluate them with AI, and crystallize them into immutable on-chain data." />
     <meta property="og:type" content="website" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;700;800&family=Space+Grotesk:wght@500;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="styles.css" />
     <!-- GSAP Animation Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Draggable.min.js" defer></script>
     <script src="script.js" defer></script>
     <style>
-        .iridescent-card { 
-            position: relative; overflow: hidden; height: 720px; padding: 4.5rem 3rem; border-radius: 48px; 
-            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch;
-            opacity: 0.8; transform-style: preserve-3d;
-            z-index: 5; will-change: transform, opacity, background; cursor: pointer;
+        .iridescent-card {
+            position: relative;
+            overflow: hidden;
+            height: 720px;
+            padding: 4.5rem 3rem;
+            border-radius: 48px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0.8;
+            transform-style: preserve-3d;
+            z-index: 5;
         }
 
-        .card-content { display: flex; flex-direction: column; flex-grow: 1; transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1); margin-top: 250px; }
-
-        /* Initially Stealth Items */
-        .card-content > *:not(.card-price-wrap) {
-            opacity: 0; transform: translateY(20px); filter: blur(20px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        .iridescent-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url('hover-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            z-index: -1;
             pointer-events: none;
         }
-        .card-price-wrap { 
-            transition: all 0.5s cubic-bezier(0.2, 0, 0, 1);
-            margin: 0 !important;
-            display: flex; align-items: baseline; justify-content: center; gap: 8px;
-            z-index: 10;
+
+        .iridescent-card:hover::after {
+            opacity: 0.15;
         }
 
-        .pricing-grid-v7:hover .iridescent-card { opacity: 0.2; transform: scale(0.95); filter: blur(5px); }
-
-        .iridescent-card:hover { 
-            transform: translateY(-20px) scale(1.05) rotateX(8deg) rotateY(8deg); 
-            background: rgba(255, 255, 255, 0.05); 
-            backdrop-filter: blur(40px) saturate(150%); -webkit-backdrop-filter: blur(40px) saturate(150%);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.05), inset 0 0 20px rgba(255,255,255,0.2); 
-            opacity: 1 !important; z-index: 100; filter: blur(0) !important;
+        /* Initially Stealth Items */
+        .card-content>*:not(.card-price-wrap) {
+            opacity: 0;
+            transform: translateY(40px) translateZ(50px);
+            filter: blur(20px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .iridescent-card:hover .card-content { margin-top: 0; }
+        .card-price-wrap {
+            opacity: 1;
+            transform: scale(1.4) translateZ(100px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+            color: rgba(0, 0, 0, 0.8);
+            flex-grow: 0;
+            margin: 0;
+        }
 
-        .iridescent-card:hover .card-title-v8 { color: #000; text-shadow: 0 0 1px rgba(0,0,0,0.1); }
-        .iridescent-card:hover .card-price-val { color: #000; }
-        .iridescent-card:hover .card-features-v8 li { color: #111; font-weight: 700; }
+        .pricing-grid-v7:hover .iridescent-card {
+            opacity: 0.2;
+            transform: scale(0.9) translateZ(-100px);
+            filter: blur(5px);
+        }
 
+        .iridescent-card:hover {
+            transform: translateY(-20px) scale(1.05) rotateX(10deg) rotateY(5deg) !important;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(40px) saturate(150%);
+            -webkit-backdrop-filter: blur(40px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+            opacity: 1 !important;
+            z-index: 100;
+            filter: blur(0) !important;
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
 
-        .iridescent-card:hover .card-content > * { opacity: 1; transform: translateY(0) translateZ(0); filter: blur(0); pointer-events: auto;}
+        .iridescent-card:hover .card-content>* {
+            opacity: 1;
+            transform: translateY(0) translateZ(0);
+            filter: blur(0);
+        }
+
         .iridescent-card:hover .card-price-wrap {
-            margin: 1.5rem 0 !important;
-            margin-top: 2rem !important;
+            transform: scale(1) translateZ(0);
+            margin-bottom: 2rem;
+        }
+
+        /* ═══════════════════════════════════════
+           ABOUT MODAL — Nomad Cyberpunk
+           ═══════════════════════════════════════ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.6s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .about-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -40%) scale(0.95);
+            width: 90%;
+            max-width: 800px;
+            padding: 4rem;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(50px);
+            -webkit-backdrop-filter: blur(50px);
+            color: #fff;
+            z-index: 2001;
+            transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .about-modal.active {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .about-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 800;
+            font-size: 1rem;
+            letter-spacing: 0.3rem;
+            color: #8B5CF6;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1rem;
+        }
+
+        .about-text {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: left;
+            margin-bottom: 2.5rem;
+        }
+
+        .about-bullets {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 3rem;
+            text-align: left;
+        }
+
+        .about-bullets li {
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .about-bullets b {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .tech-stack {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            margin-bottom: 3rem;
+            opacity: 0.5;
+            filter: grayscale(1);
+        }
+
+        .tech-icon {
+            height: 24px;
+            opacity: 0.5;
+        }
+
+        .btn-close-modal {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            background: none;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .btn-close-modal:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: rgba(255, 215, 0, 0.8);
+            transform: scale(1.1);
+        }
+
+        /* ═══════════════════════════════════════
+           X-RAY CONSOLRE (Consensus Inspector)
+           ═══════════════════════════════════════ */
+        .consensus-inspector {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            width: 90%;
+            max-width: 900px;
+            height: 500px;
+            background: #06080D;
+            border: 1px solid #00FFA3;
+            border-radius: 20px;
+            padding: 2rem;
+            z-index: 3001;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 0 50px rgba(0, 255, 163, 0.2);
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+        }
+
+        .consensus-inspector::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .consensus-inspector.active {
+            display: flex;
+            animation: consoleEnter 0.4s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+
+        @keyframes consoleEnter {
+            0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .ci-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 255, 163, 0.3);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            color: #00FFA3;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        .ci-body {
+            flex-grow: 1;
+            overflow-y: auto;
+            color: #00FFA3;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            text-shadow: 0 0 5px rgba(0, 255, 163, 0.5);
+        }
+
+        .ci-line {
+            margin-bottom: 0.8rem;
+            opacity: 0;
+            transform: translateX(-10px);
+            animation: lineFadeIn 0.3s forwards;
+        }
+
+        @keyframes lineFadeIn {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .ci-deciphering {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            color: #00FFA3;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            animation: pulseText 1s infinite alternate;
+        }
+
+        @keyframes pulseText {
+            from { opacity: 0.4; }
+            to { opacity: 1; text-shadow: 0 0 10px #00FFA3; }
+        }
+
+        .ci-agent { font-weight: bold; color: #fff; background: rgba(0, 255, 163, 0.2); padding: 2px 6px; border-radius: 4px; margin-right: 10px; }
+
+        /* Blockchain Status Colors */
+        .status--crystallizing { color: #FFD700; animation: blinkStatus 1.5s infinite; }
+        .status--confirmed { color: #00FFA3; font-weight: bold; }
+        .status--failed { color: #FF4B4B; }
+
+        @keyframes blinkStatus {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .inspect-btn {
+            background: none;
+            border: 1px solid rgba(0, 255, 163, 0.5);
+            color: #00FFA3;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: 0.3s;
+        }
+
+        .inspect-btn:hover { background: #00FFA3; color: #000; box-shadow: 0 0 10px #00FFA3; }
+
+        /* Pipeline Section Glass Styles */
+        /* 🎢 HIGH-VELOCITY COMMAND MARQUEE */
+        .marquee-section {
+            padding: 60px 0; /* Narrower Track */
+            background: #FFFFFF;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 5;
+            border-top: 1px solid rgba(0,0,0,0.03);
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+            transform: none; 
+        }
+
+        .marquee-row {
+            display: flex;
+            white-space: nowrap;
+            width: max-content;
+            animation: marqueeLeft 25s linear infinite;
+        }
+
+        .marquee-row span {
+            font-family: 'Space Mono', monospace;
+            font-size: 2.5rem; /* Massive Typographic Impact */
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #000000;
+            padding: 0 4rem;
+            transition: all 0.3s ease;
+        }
+
+        /* ── ALTERNATING OUTLINE STYLE ── */
+        .marquee-row span:nth-child(even) {
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(0,0,0,0.1);
+            filter: blur(1.5px); /* Atmospheric Shimmer */
+            opacity: 0.6;
+        }
+
+        @keyframes marqueeLeft {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .pipeline-wrapper {
+            display: flex;
+            gap: 2.5rem;
+            width: max-content;
+            /* Removed CSS animation for GSAP timeScale control */
         }
         
-        .card-price-val { font-size: 3.5rem; font-weight: 800; font-family: 'Space Grotesk', sans-serif;}
+        /* Removed .pipeline-container:hover .pipeline-wrapper paused state */
 
-        .card-price-val.accent-price {
-            background: linear-gradient(135deg, #1D4ED8 0%, #8B5CF6 100%);
-            -webkit-background-clip: text; background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .btn-card-v8 {
-            width: fit-content; min-width: 220px; padding: 14px 34px; border-radius: 50px; 
-            font-weight: 800; font-size: 0.9rem; margin: 0 auto;
-            text-align: center; cursor: pointer; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            font-family: 'Space Grotesk', sans-serif; border: 1px solid rgba(255, 255, 255, 0.2); 
-            letter-spacing: 1.5px; text-transform: uppercase;
-            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), inset 0 0 10px rgba(255,255,255,0.2);
-            color: #0F172A; position: relative; overflow: hidden;
-            z-index: 20; display: block;
+        .pipe-card {
+            width: 380px;
+            flex-shrink: 0;
+            position: relative;
+            padding: 4.5rem 3rem;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border: none !important;
+            backdrop-filter: blur(12px);
+            /* Ultra-Smooth Braking Curve */
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 480px;
+            transform: skewX(-4deg) rotate(-1deg);
+            will-change: transform;
         }
 
-        .btn-card-v8:hover {
-            transform: translateY(-8px) scale(1.05);
+        /* 20 UNIQUE PRISMATIC IDENTITIES (Triple-Pastel Architecture) */
+        .pipe-card:nth-child(20n+1):hover { border-color: #A0FEFF; --glow-grad: linear-gradient(45deg, #A0FEFF, #D6BCFF, #C2FFDC); }
+        .pipe-card:nth-child(20n+2):hover { border-color: #D6BCFF; --glow-grad: linear-gradient(45deg, #D6BCFF, #FFD6BC, #FFB3BA); }
+        .pipe-card:nth-child(20n+3):hover { border-color: #FFD6BC; --glow-grad: linear-gradient(45deg, #FFD6BC, #C2FFDC, #BAE1FF); }
+        .pipe-card:nth-child(20n+4):hover { border-color: #C2FFDC; --glow-grad: linear-gradient(45deg, #C2FFDC, #A0FEFF, #E6E6FA); }
+        .pipe-card:nth-child(20n+5):hover { border-color: #FFB3BA; --glow-grad: linear-gradient(45deg, #FFB3BA, #FFDFBA, #FFFFBA); }
+        .pipe-card:nth-child(20n+6):hover { border-color: #FFFFBA; --glow-grad: linear-gradient(45deg, #FFFFBA, #BAFFC9, #BAE1FF); }
+        .pipe-card:nth-child(20n+7):hover { border-color: #BAE1FF; --glow-grad: linear-gradient(45deg, #BAE1FF, #B3B9FF, #D6BCFF); }
+        .pipe-card:nth-child(20n+8):hover { border-color: #E6E6FA; --glow-grad: linear-gradient(45deg, #E6E6FA, #FFF0F5, #FFE4E1); }
+        .pipe-card:nth-child(20n+9):hover { border-color: #F0FFF0; --glow-grad: linear-gradient(45deg, #F0FFF0, #F5FFFA, #E0FFFF); }
+        .pipe-card:nth-child(20n+10):hover { border-color: #FFF5EE; --glow-grad: linear-gradient(45deg, #FFF5EE, #FDF5E6, #F5F5DC); }
+        .pipe-card:nth-child(20n+11):hover { border-color: #F0F8FF; --glow-grad: linear-gradient(45deg, #F0F8FF, #E0FFFF, #DFFFFD); }
+        .pipe-card:nth-child(20n+12):hover { border-color: #E0FFE0; --glow-grad: linear-gradient(45deg, #E0FFE0, #DFFFFD, #E6FFFA); }
+        .pipe-card:nth-child(20n+13):hover { border-color: #FFF0F0; --glow-grad: linear-gradient(45deg, #FFF0F0, #FFE4E1, #FFEFD5); }
+        .pipe-card:nth-child(20n+14):hover { border-color: #F5F5DC; --glow-grad: linear-gradient(45deg, #F5F5DC, #FAFAD2, #FFFACD); }
+        .pipe-card:nth-child(20n+15):hover { border-color: #E6FFFA; --glow-grad: linear-gradient(45deg, #E6FFFA, #F0FFFF, #F0F8FF); }
+        .pipe-card:nth-child(20n+16):hover { border-color: #FFFACD; --glow-grad: linear-gradient(45deg, #FFFACD, #FFE4B5, #FFEFD5); }
+        .pipe-card:nth-child(20n+17):hover { border-color: #FFEFD5; --glow-grad: linear-gradient(45deg, #FFEFD5, #FFF8DC, #F5F5DC); }
+        .pipe-card:nth-child(20n+18):hover { border-color: #F0E68C; --glow-grad: linear-gradient(45deg, #F0E68C, #BDB76B, #F5F5DC); }
+        .pipe-card:nth-child(20n+19):hover { border-color: #ADD8E6; --glow-grad: linear-gradient(45deg, #ADD8E6, #87CEEB, #BAE1FF); }
+        .pipe-card:nth-child(20n+20):hover { border-color: #98FB98; --glow-grad: linear-gradient(45deg, #98FB98, #F0FFF0, #C2FFDC); }
+
+        .pipe-card:hover {
+            transform: scale(1.08) translateY(-30px) skewX(0deg) rotate(0deg) !important;
+            z-index: 100;
+            border: none !important;
+            filter: saturate(1.2) brightness(1.05);
+        }
+
+        /* Iridescent Ambient Glow Shadow */
+        .pipe-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--glow-grad);
+            filter: blur(80px); 
+            opacity: 0;
+            z-index: -1;
+            border-radius: 40px;
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: borderFlow 6s linear infinite;
+        }
+        .pipe-card:hover::after { opacity: 0.8; }
+
+        @keyframes cardPulse {
+            0% { transform: scale(1.08) translateY(-30px) skewX(0deg) rotate(0deg); }
+            100% { transform: scale(1.1) translateY(-35px) skewX(0deg) rotate(0deg); }
+        }
+
+        .pipe-card:nth-child(4n+1):hover { box-shadow: 0 40px 100px rgba(140, 255, 242, 0.15); }
+        .pipe-card:nth-child(4n+2):hover { box-shadow: 0 40px 100px rgba(224, 195, 255, 0.15); }
+        .pipe-card:nth-child(4n+3):hover { box-shadow: 0 40px 100px rgba(255, 222, 179, 0.15); }
+        .pipe-card:nth-child(4n+4):hover { box-shadow: 0 40px 100px rgba(193, 255, 215, 0.15); }
+
+        .pipe-card:hover {
+            transform: scale(1.05) translateY(-25px) !important;
+            box-shadow: 0 50px 120px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            border: none !important;
+        }
+        
+        @keyframes borderFlow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .pipe-card:hover { animation: borderFlow 10s linear infinite; }
+        
+        .pipe-card .card-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #000;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+        .pipe-card .card-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .pipe-card:hover .card-title { color: #000; }
+        .pipe-card:hover .card-text { color: #000; }
+
+        .pipe-card:nth-child(2) {
+            animation-delay: 1.5s;
+            animation-name: float-v2;
+        }
+
+        .pipe-card:nth-child(3) {
+            animation-delay: 3s;
+            animation-name: float-v1;
+        }
+
+        @keyframes float-v1 {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes float-v2 {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(15px);
+            }
+        }
+
+        .pipe-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 40px;
+            opacity: 0; /* Outline completely hidden */
+            pointer-events: none;
+        }
+        .pipe-card:hover::before { opacity: 0; } /* Never visible */
+
+        .pipe-card:hover {
+            transform: translateY(-20px) scale(1.03) rotateX(10deg) rotateY(15deg) !important;
             background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), inset 0 0 20px rgba(255,255,255,0.5);
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.1), 0 0 30px rgba(179, 113, 255, 0.15);
+            animation-play-state: paused;
+        }
+
+        .card-icon-v9 {
+            font-size: 2.8rem;
+            margin-bottom: 2rem;
+            display: block;
+            filter: saturate(1.5);
+        }
+
+        .pipe-card .card-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 1.2rem;
+            color: #111;
+            letter-spacing: -1px;
+        }
+
+        .pipe-card .card-text {
+            font-size: 1.15rem;
+            color: #444;
+            line-height: 1.6;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .card-stage-badge {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            padding: 4px 12px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #888;
+        }
+
+        .card-meta-pills {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 1.5rem;
+        }
+
+        .meta-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.03);
+            width: fit-content;
+        }
+
+        /* Step 2 Progress UI */
+        .audit-progress-wrap {
+            margin-top: 1.5rem;
+        }
+
+        .progress-cells {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .p-cell {
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .p-cell.active {
+            background: #B371FF;
+        }
+
+        .card-action-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: #111;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .card-action-link:hover {
+            color: #B371FF;
+            transform: translateX(5px);
+        }
+
+        .window-scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(0, 198, 255, 0.3), transparent);
+            animation: scanline 4s linear infinite;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        @keyframes scanline {
+            0% {
+                top: -10%;
+            }
+
+            100% {
+                top: 110%;
+            }
+        }
+
+        .pipe-card.stage-card {
+            opacity: 1;
+            transform: translateY(0);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        /* Dim-to-Bloom Interaction */
+        .pipe-card .card-title,
+        .pipe-card .card-text,
+        .pipe-card .mini-symbol,
+        .pipe-card .card-stage-badge {
+            opacity: 0.5;
+            transition: opacity 0.5s ease, filter 0.5s ease;
+            filter: blur(0.5px);
+        }
+
+        .pipe-card:hover .card-title,
+        .pipe-card:hover .card-text,
+        .pipe-card:hover .mini-symbol,
+        .pipe-card:hover .card-stage-badge {
+            opacity: 1;
+            filter: blur(0px);
+        }
+
+        .pipe-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.4) !important;
+        }
+
+        /* Pricing Card Dim-to-Bloom */
+        .pricing-card h3,
+        .pricing-card .price,
+        .pricing-card p,
+        .pricing-card ul {
+            transition: opacity 0.5s ease, filter 0.5s ease;
+        }
+
+        .pricing-card:hover h3,
+        .pricing-card:hover .price,
+        .pricing-card:hover p,
+        .pricing-card:hover ul {
+            opacity: 1 !important;
+            filter: blur(0px) !important;
+        }
+
+        /* Price-First Assembly Animation with Stable Layout */
+        .iridescent-card {
+            min-height: 580px;
+            /* Locked height for stability */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                background 0.8s ease-in-out,
+                box-shadow 0.8s ease-in-out,
+                border-color 0.8s ease-in-out;
+            cursor: pointer;
+            overflow: hidden;
+            perspective: 1200px;
+            transform-style: preserve-3d;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        /* Animated Border Highlight */
+        .iridescent-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0), rgba(179, 113, 255, 0.2));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .iridescent-card:hover::after {
+            background: linear-gradient(135deg, #B371FF, #00F0FF);
+            opacity: 1;
+        }
+
+        .iridescent-card .card-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 1.5rem;
+            /* Tighter padding */
+            text-align: center;
+            transition: all 0.6s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .card-title-v8,
+        .card-subtitle-v8,
+        .card-features-v8,
+        .btn-card-v8 {
+            opacity: 0.1;
+            max-height: 0;
+            margin: 0 !important;
+            padding: 0 !important;
+            transform: translateY(10px);
+            filter: blur(4px);
+            /* Soft peek, not a smudge */
+            transition: all 0.5s cubic-bezier(0.2, 0, 0, 1);
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .card-price-val {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -3px;
+            font-weight: 800;
+            color: #111;
+            /* Sharp and Premium */
+            transition: color 0.5s ease;
+        }
+
+        .card-price-wrap {
+            transform: scale(1.3);
+            transition: all 0.5s cubic-bezier(0.2, 0, 0, 1);
+            margin: 0 !important;
+        }
+
+        .iridescent-card:hover .card-title-v8,
+        .iridescent-card:hover .card-subtitle-v8,
+        .iridescent-card:hover .card-features-v8 {
+            opacity: 1;
+            max-height: 200px;
+            transform: translateY(0);
+            filter: blur(0px);
+            pointer-events: auto;
+            margin: 0.5rem 0 !important;
+        }
+
+        .iridescent-card:hover .btn-card-v8 {
+            opacity: 1;
+            max-height: 100px;
+            transform: translateY(0);
+            filter: blur(0px);
+            pointer-events: auto;
+            margin-top: 1.5rem !important;
+        }
+
+        .iridescent-card:hover .card-price-val {
             color: #000;
         }
 
-        /* Unique mini-glass chip for BIY (Highlighted) */
-        .btn-primary-v8 { 
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
-            border: 1px solid rgba(59, 130, 246, 0.4);
-            color: #1D4ED8;
-            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.1), inset 0 0 15px rgba(255,255,255,0.3);
+        /* Tactile 3D Integrity Button */
+        .btn-card-v8 {
+            padding: 0.9rem 2.2rem !important;
+            background: linear-gradient(135deg, #B371FF, #8A2BE2) !important;
+            color: white !important;
+            border-radius: 50px !important;
+            /* Perfect Pill Shape */
+            font-weight: 700;
+            border: none;
+            position: relative;
+            box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.3),
+                inset 0 -5px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: inline-block;
         }
-        .btn-primary-v8:hover {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.4));
-            border-color: rgba(59, 130, 246, 0.8);
-            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.2), inset 0 0 20px rgba(255,255,255,0.5);
+
+        .iridescent-card:hover .btn-card-v8 {
+            transform: scale(1.05) translateZ(50px);
+            box-shadow: 0 15px 30px rgba(138, 43, 226, 0.5),
+                inset 0 5px 10px rgba(255, 255, 255, 0.4),
+                inset 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-card-v8:hover {
+            transform: scale(0.95) translateZ(40px) !important;
+            /* Depression Effect */
+            filter: brightness(1.1);
         }
 
         .btn-card-v8::before {
-            content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 60%);
-            opacity: 0; transition: opacity 0.4s; pointer-events: none;
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 10%;
+            width: 80%;
+            height: 40%;
+            background: linear-gradient(rgba(255, 255, 255, 0.4), transparent);
+            border-radius: 100px;
+            pointer-events: none;
         }
-        .btn-card-v8:hover::before { opacity: 1; }
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.4); 
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            z-index: 2000; opacity: 0; pointer-events: none; transition: 0.6s ease;
-        }
-    /* ═══════════════════════════════════════
-           ABOUT MODAL — Nomad Cyberpunk
-           ═══════════════════════════════════════ */
-        .modal-overlay.active { opacity: 1; pointer-events: all; }
-        
-        .about-modal {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -40%) scale(0.9);
-            width: 90%; max-width: 800px; padding: 4rem; border-radius: 40px;
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(50px); -webkit-backdrop-filter: blur(50px);
-            color: #fff; z-index: 2001; transition: 0.8s cubic-bezier(0.23, 1, 0.32, 1); opacity: 0; pointer-events: none;
-        }
-        .about-modal.active { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: all; }
-        
-        .about-title { font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: 1rem; letter-spacing: 0.3rem; color: #8B5CF6; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; }
-        .about-text { font-size: 1.15rem; line-height: 1.6; color: rgba(255,255,255,0.8); text-align: left; margin-bottom: 2.5rem; }
-        .about-bullets { list-style: none; padding: 0; margin-bottom: 3rem; text-align: left; }
-        .about-bullets li { margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: flex-start; }
-        .about-bullets b { color: #fff; font-weight: 700; }
-        
-        .tech-stack { display: flex; gap: 2rem; align-items: center; margin-bottom: 3rem; opacity: 0.5; filter: grayscale(1); }
-        .tech-icon { height: 24px; opacity: 0.5; }
-        
-        .btn-close-modal {
-            position: absolute; top: 2rem; right: 2rem; width: 40px; height: 40px; border-radius: 50%;
-            border: 1px solid rgba(255, 215, 0, 0.3); background: none; color: #fff; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; transition: 0.3s;
-        }
-        .btn-close-modal:hover { background: rgba(255, 215, 0, 0.1); border-color: rgba(255, 215, 0, 0.8); transform: scale(1.1); }
 
-        /* Pipeline Section Glass Styles */
-        .pipeline-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 5rem; perspective: 2000px; padding: 2rem 0; z-index: 10; position: relative;}
-        
-        .pipe-card { 
-            position: relative; overflow: hidden; padding: 4.5rem 3rem; border-radius: 40px; 
-            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex; flex-direction: column; justify-content: space-between;
-            min-height: 480px; transform-style: preserve-3d;
-            animation: float-v1 6s ease-in-out infinite; 
+        /* Staggered Assembly */
+        .iridescent-card:hover .card-title-v8 {
+            transition-delay: 0.05s;
         }
-        .pipe-card:nth-child(2) { animation-delay: 1.5s; animation-name: float-v2; }
-        .pipe-card:nth-child(3) { animation-delay: 3s; animation-name: float-v1; }
 
-        @keyframes float-v1 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        @keyframes float-v2 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(15px); } }
+        .iridescent-card:hover .card-subtitle-v8 {
+            transition-delay: 0.1s;
+        }
 
-        .pipe-card::before {
-            content: ""; position: absolute; inset: 0; padding: 2px;
+        .iridescent-card:hover .card-features-v8 {
+            transition-delay: 0.15s;
+            margin-top: 1.5rem !important;
+        }
+
+        .iridescent-card:hover .btn-card-v8 {
+            transition-delay: 0.25s;
+            margin-top: 1.5rem !important;
+        }
+
+        .iridescent-card:hover .card-price-wrap {
+            transform: scale(1);
+            margin: 1.5rem 0 !important;
+        }
+
+        .iridescent-card:hover {
+            background: rgba(255, 255, 255, 0.7) !important;
+            box-shadow: 0 40px 90px rgba(0, 0, 0, 0.1);
+            border-color: transparent;
+            backdrop-filter: blur(40px);
+        }
+
+        /* Infrastructure Tab Styles */
+        .infra-tab {
+            background: none;
+            border: none;
+            padding: 1rem 0;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #888;
+            letter-spacing: 2px;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .infra-tab.active {
+            color: #000;
+        }
+
+        .infra-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #B371FF;
+        }
+
+        .infra-control-center {
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            background: #FFFFFF !important;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.03);
             border-radius: 40px;
-            background: linear-gradient(135deg, #00F2FE, #FFD700);
-            background-size: 200% auto;
-            animation: gradientShift 6s linear infinite;
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor; mask-composite: exclude;
-            opacity: 0.1; transition: 0.6s ease;
         }
-        .pipe-card:hover::before { opacity: 0.9; filter: drop-shadow(0 0 15px rgba(0, 242, 254, 0.5)); }
-        
-        .pipe-card:hover { 
-            transform: translateY(-20px) scale(1.03) rotateX(10deg) rotateY(5deg) !important;
-            background: rgba(255, 255, 255, 0.08); 
-            box-shadow: 0 50px 100px rgba(0,0,0,0.2);
-            animation-play-state: paused;
-        }
-        
-        .card-icon-v9 { font-size: 2.8rem; margin-bottom: 2rem; display: block; filter: saturate(1.5); }
-        .pipe-card .card-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; font-weight: 800; margin-bottom: 1.2rem; color: #111; letter-spacing: -1px; }
-        .pipe-card .card-text { font-size: 1.15rem; color: #444; line-height: 1.6; font-weight: 500; font-family: 'Inter', sans-serif; }
-        
-        .card-stage-badge { 
-            position: absolute; top: 1.5rem; right: 1.5rem; 
-            padding: 4px 12px; border-radius: 8px; 
-            background: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1);
-            font-size: 0.65rem; font-weight: 800; letter-spacing: 1px; color: #888;
-        }
-        .card-meta-pills { display: flex; flex-direction: column; gap: 10px; margin-top: 1.5rem; }
-        .meta-pill { 
-            display: flex; align-items: center; gap: 8px; 
-            font-size: 0.7rem; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.5px;
-            padding: 6px 12px; border-radius: 8px; background: rgba(0,0,0,0.03); width: fit-content;
-        }
-        
-        /* Step 2 Progress UI */
-        .audit-progress-wrap { margin-top: 1.5rem; }
-        .progress-cells { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 1rem; }
-        .p-cell { height: 4px; border-radius: 2px; background: rgba(0,0,0,0.05); }
-        .p-cell.active { background: #B371FF; }
 
-        .card-action-link { 
-            display: flex; align-items: center; gap: 10px; margin-top: 2rem;
-            font-size: 0.85rem; font-weight: 800; color: #111; letter-spacing: 0.5px; text-decoration: none; text-transform: uppercase;
-            transition: 0.3s;
+        .tab-pane {
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .card-action-link:hover { color: #B371FF; transform: translateX(5px); }
+        /* ══════════════════════════════════════
+           🎇 MEGA SPARK & SPARKLE SYSTEM
+           ══════════════════════════════════════ */
+        .spark {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            animation: spark-explode 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        @keyframes spark-explode {
+            0%   { transform: scale(1) translate(0, 0); opacity: 1; }
+            60%  { opacity: 1; }
+            100% { transform: scale(0) translate(var(--dx), var(--dy)); opacity: 0; }
+        }
+
+        /* Floating ambient sparkles */
+        .ambient-sparkle {
+            position: fixed;
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            animation: sparkle-float var(--dur, 4s) ease-in-out infinite var(--delay, 0s);
+        }
+
+        @keyframes sparkle-float {
+            0%   { transform: translateY(0) scale(0); opacity: 0; }
+            20%  { opacity: 1; transform: translateY(-20px) scale(1); }
+            80%  { opacity: 0.8; transform: translateY(var(--travel, -80px)) scale(0.6); }
+            100% { transform: translateY(var(--travel2, -120px)) scale(0); opacity: 0; }
+        }
+
+        /* Card corner sparkle decorators */
+        .card-sparkle-corner {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .iridescent-card:hover .card-sparkle-corner {
+            animation: corner-twinkle 1.2s ease-in-out infinite;
+        }
+
+        @keyframes corner-twinkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50%       { opacity: 1; transform: scale(1); }
+        }
+
+        /* Magnetic cursor glow dot */
+        #cursor-glow {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(179,113,255,0.6), transparent);
+            pointer-events: none;
+            z-index: 99990;
+            transform: translate(-50%, -50%);
+            transition: transform 0.05s linear, width 0.2s ease, height 0.2s ease;
+            mix-blend-mode: multiply;
+        }
+
+        /* Scroll reveal – ultra bouncy */
+        .reveal-bouncy {
+            opacity: 0;
+            transform: translateY(60px) scale(0.92);
+        }
+
+        .reveal-bouncy.visible {
+            animation: bouncy-in 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.5) forwards;
+        }
+
+        @keyframes bouncy-in {
+            0%   { opacity: 0; transform: translateY(60px) scale(0.92); }
+            60%  { opacity: 1; transform: translateY(-8px) scale(1.02); }
+            80%  { transform: translateY(4px) scale(0.99); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Text shimmer wave on hover */
+        .shimmer-text {
+            background-size: 300% auto;
+            animation: shimmer-wave 3s linear infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes shimmer-wave {
+            0%   { background-position: 0% center; }
+            100% { background-position: 300% center; }
+        }
+
+        /* Spring scale on all interactive elements */
+        .spring-scale {
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.5);
+        }
+        .spring-scale:hover { transform: scale(1.05); }
+        .spring-scale:active { transform: scale(0.96); }
+
+        /* Glitter particle burst */
+        .glitter {
+            position: fixed;
+            width: 5px;
+            height: 5px;
+            transform: rotate(45deg);
+            pointer-events: none;
+            z-index: 99998;
+            animation: glitter-burst var(--dur, 0.8s) ease-out forwards;
+        }
+
+        @keyframes glitter-burst {
+            0%   { opacity: 1; transform: rotate(45deg) scale(1) translate(0,0); }
+            100% { opacity: 0; transform: rotate(var(--rot, 225deg)) scale(0) translate(var(--dx), var(--dy)); }
+        }
+
+        /* Pricing card: persistent sparkle dots in corners */
+        .corner-star {
+            position: absolute;
+            font-size: 10px;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 30;
+            transition: opacity 0.3s;
+            color: #B371FF;
+            text-shadow: 0 0 6px #B371FF, 0 0 12px #00F0FF;
+            animation: star-spin 2s linear infinite;
+        }
+
+        @keyframes star-spin {
+            0%   { transform: rotate(0deg) scale(0.5); }
+            50%  { transform: rotate(180deg) scale(1.2); }
+            100% { transform: rotate(360deg) scale(0.5); }
+        }
+
+        .iridescent-card:hover .corner-star {
+            opacity: 1;
+        }
+
+        /* Section text bounce in on scroll */
+        .section-title, .section-subtitle, .section-label {
+            will-change: transform, opacity;
+        }
+
+        /* Wobbly nav link hover */
+        .nav-links-v6 a {
+            display: inline-block;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.5), color 0.3s ease, opacity 0.3s ease;
+        }
+        .nav-links-v6 a:hover {
+            transform: translateY(-3px) scale(1.08);
+        }
+
+        /* Mini stats pop-in */
+        .mini-stat strong {
+            display: inline-block;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.5);
+        }
+        .mini-stat:hover strong {
+            transform: scale(1.2) translateY(-2px);
+            color: #B371FF;
+        }
+
+
+
+        @keyframes tab-line-shimmer {
+            0%   { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        /* 📱 ULTRA-RESPONSIVE MASTERPIECE LAYER */
+        @media (max-width: 1024px) {
+            .section-inner { padding: 0 40px; }
+            .section-title { font-size: 3rem !important; }
+            .pipeline-wrapper { gap: 1.5rem; }
+            .pipe-card { width: 320px; padding: 3rem 2rem; min-height: 400px; }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-v6 { padding: 10px 0; height: auto !important; position: relative !important; }
+            .header-inner-v6 { padding: 0 20px !important; flex-direction: column; gap: 15px; }
+            .nav-links-v6 { display: none !important; }
+            .logo-v6 { font-size: 1.2rem; }
+            
+            .section-title { font-size: 2.5rem !important; line-height: 1.1; }
+            .section-subtitle { font-size: 1.1rem !important; }
+            .pipeline-section, .window-section, .coming-soon-section { padding: 80px 0 !important; }
+            
+            .floating-window { padding: 30px !important; border-radius: 40px !important; margin: 0 15px; }
+            .pipe-card { width: 280px; padding: 2.5rem 1.5rem; border-radius: 30px; }
+            
+            .window-content { flex-direction: column !important; gap: 3rem !important; padding: 30px !important; }
+            .infra-visual-content { min-height: 300px !important; width: 100% !important; }
+            .infra-video-active { border-radius: 20px !important; }
+
+            .price-grid { grid-template-columns: 1fr !important; gap: 2rem !important; padding: 0 10px; }
+            
+            .footer-inner { grid-template-columns: 1fr !important; gap: 3rem !important; text-align: center; }
+            .footer-col { display: flex; flex-direction: column; align-items: center; }
+        }
+
+        @media (max-width: 480px) {
+            .section-title { font-size: 2rem !important; }
+            .pipe-card { width: 260px; padding: 2.2rem 1.2rem; }
+            .coming-soon-section { padding: 100px 0 !important; }
+            .glow-dot { width: 10px !important; height: 10px !important; }
+        }
     </style>
 </head>
-<body>
 
-    <!-- About Modal -->
-    <div id="about-overlay" class="modal-overlay"></div>
-    <div id="about-modal" class="about-modal">
-        <button class="btn-close-modal" id="close-about">✕</button>
-        <div class="about-title" style="text-align: center;">О ПРОЕКТЕ</div>
-        <p class="about-text">
-            ProtoQol — это инфраструктурный мост между физическим действием и неизменяемой истиной блокчейна. Мы создали децентрализованную систему ESG-аудита, где корпоративная ответственность и благотворительность получают математическое доказательство.
-        </p>
-        <ul class="about-bullets">
-            <li><span>⚖️</span> <div><b>Суд Трех Биев:</b> Мультиагентный ИИ-консенсус мгновенно проверяет отчеты и отсекает фрод.</div></li>
-            <li><span>⚡</span> <div><b>Zero-Friction Web3:</b> Никаких криптокошельков для пользователей. Бэкенд сам генерирует PDA-записи и оплачивает газ в сети Solana.</div></li>
-            <li><span>🏢</span> <div><b>Степное Право в Цифре:</b> Философия традиций Асар и Жеты Жаргы, упакованная в API для современного бизнеса.</div></li>
-        </ul>
-        
-        <div class="tech-stack">
-            <span style="font-size: 0.8rem; letter-spacing: 0.1rem;">POWERED BY —</span>
-            <span style="font-weight: 700;">SOLANA</span>
-            <span style="font-weight: 700;">FASTAPI</span>
-            <span style="font-weight: 700;">GEMINI 2.0</span>
-        </div>
-    </div>
+<body>
 
     <!-- ═══════════════════════════════════════
           STICKY FULL-WIDTH HEADER
           ═══════════════════════════════════════ -->
     <nav id="navbar" class="navbar-v6 sticky-header">
-        <div class="header-inner-v6" style="max-width: 1400px; margin: 0 auto; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 40px;">
+        <div class="header-inner-v6"
+            style="max-width: 1400px; margin: 0 auto; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 40px;">
             <!-- Logo -->
-            <div class="logo-v6">PROTOQOL.PRO</div>
+            <div class="logo-v6">PROTOQOL</div>
 
-            <!-- Main Menu -->
+            <!-- Main Menu (Desktop) -->
             <ul class="nav-links-v6">
-                <li><a href="#how-it-works">Technology ▾</a></li>
+                <li><a href="#how-it-works">Technology</a></li>
                 <li><a href="dashboard.html" style="color: #3b82f6;">Dashboard B2B</a></li>
+                <li><a href="javascript:void(0)" id="nav-create-campaign" style="color: #8B5CF6; font-weight: 800;">+
+                        Create Bounty</a></li>
                 <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#team">Team</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
 
-            <!-- Actions -->
+            <!-- Actions & Toggles -->
             <div class="nav-actions-v6">
-                <button id="open-about" class="btn-outline-v6">Tutorial</button>
-                <a href="#login" class="btn-filled-v6">Launch App</a>
+                <a href="javascript:void(0)" id="launch-app-btn" class="btn-filled-v6">Launch App</a>
+                <!-- Hamburger Button (Mobile Only) -->
+                <button id="menu-btn-v6" class="menu-btn-v6" aria-label="Open Menu">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
+        </div>
+
+        <!-- Mobile Dropdown Menu -->
+        <div id="mobile-menu-v6" class="mobile-menu-v6">
+            <ul class="mobile-nav-links-v6">
+                <li><a href="#how-it-works">Technology</a></li>
+                <li><a href="dashboard.html">Dashboard B2B</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#team">Team</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
         </div>
     </nav>
 
@@ -269,28 +1218,32 @@
     <!-- ═══════════════════════════════════════
          PHASE 1: HERO — The Dissecting Engine
          ═══════════════════════════════════════ -->
-    <header id="hero" class="hero" style="min-height: 90vh; display: flex; align-items: center; position: relative; overflow: visible; background: #FFFFFF;">
-        <div class="section-inner" style="z-index: 10; max-width: 1400px; margin: 0 auto; padding: 0 40px; width: 100%;">
+    <header id="hero" class="hero"
+        style="min-height: 90vh; display: flex; align-items: center; position: relative; overflow: visible; background: #FFFFFF;">
+        <div class="section-inner"
+            style="z-index: 10; max-width: 1400px; margin: 0 auto; padding: 0 40px; width: 100%;">
             <div class="hero-split" style="display: flex; align-items: center; gap: 4rem;">
                 <div class="hero-left" style="flex: 1;">
                     <span class="hero-label reveal">Integrity Infrastructure v2.0</span>
-                    <h1 class="hero-title reveal reveal-delay-1" style="font-size: clamp(3.2rem, 5vw, 5.5rem); display: flex; flex-direction: column;">
+                    <h1 class="hero-title reveal reveal-delay-1"
+                        style="font-size: clamp(3.2rem, 5vw, 5.5rem); display: flex; flex-direction: column;">
                         <span class="line-l">Real-world actions.</span>
                         <span class="line-r accent">On-chain truth.</span>
                     </h1>
-                    <p class="hero-subtitle reveal reveal-delay-2" style="max-width: 550px; display: flex; flex-direction: column; gap: 0.5rem;">
+                    <p class="hero-subtitle reveal reveal-delay-2"
+                        style="max-width: 550px; display: flex; flex-direction: column; gap: 0.5rem;">
                         <span class="line-l">AI-evaluated ESG data crystallized into</span>
                         <span class="line-r">immutable Solana proofs. Audit-ready. Instant.</span>
                     </p>
-                    
+
                     <div class="stats-bar">
                         <div class="stat-card">
                             <div class="stat-number">14,208</div>
                             <div class="stat-caption">Integrity Audits</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number">3</div>
-                            <div class="stat-caption">Active Missions</div>
+                            <div id="rep-score" class="stat-number">14,208</div>
+                            <div class="stat-caption">Protocol Pulse</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-number">42 ms</div>
@@ -303,152 +1256,195 @@
                     </div>
                 </div>
                 <div class="hero-right" style="flex: 0.8; display: flex; justify-content: center; position: relative;">
-                    <video src="https://labs.google/fx/api/og-video/5i0pu1lf50000" autoplay muted loop playsinline style="width: 180%; max-width: 1000px; transform: scale(1.5) translateX(-8%); mix-blend-mode: multiply; pointer-events: none;"></video>
+                    <video src="https://labs.google/fx/api/og-video/5i0pu1lf50000" autoplay muted loop playsinline
+                        style="width: 180%; max-width: 1000px; transform: scale(1.5) translateX(-8%); mix-blend-mode: multiply; pointer-events: none;"></video>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- ── Trendy Transition Marquee ── -->
-    <div class="marquee-transition">
-        <div class="marquee-inner">
-            <div class="marquee-content">
-                <span>TRANSFORMING DATA INTO TRUST • </span>
-                <span>IMMUTABLE AI CONSENSUS • </span>
-                <span>SOLANA FINALITY @ SCALE • </span>
-                <span>NOMAD INTEGRITY ENGINE • </span>
-                <span>TRANSFORMING DATA INTO TRUST • </span>
-                <span>IMMUTABLE AI CONSENSUS • </span>
-                <span>SOLANA FINALITY @ SCALE • </span>
-                <span>NOMAD INTEGRITY ENGINE • </span>
-                <span>TRANSFORMING DATA INTO TRUST • </span>
-                <span>IMMUTABLE AI CONSENSUS • </span>
-                <span>SOLANA FINALITY @ SCALE • </span>
-                <span>NOMAD INTEGRITY ENGINE • </span>
-                <span>TRANSFORMING DATA INTO TRUST • </span>
-                <span>IMMUTABLE AI CONSENSUS • </span>
-                <span>SOLANA FINALITY @ SCALE • </span>
-                <span>NOMAD INTEGRITY ENGINE • </span>
-                <span>TRANSFORMING DATA INTO TRUST • </span>
-                <span>IMMUTABLE AI CONSENSUS • </span>
-                <span>SOLANA FINALITY @ SCALE • </span>
-                <span>NOMAD INTEGRITY ENGINE • </span>
-                <span>TRANSFORMING DATA INTO TRUST • </span>
-                <span>IMMUTABLE AI CONSENSUS • </span>
-                <span>SOLANA FINALITY @ SCALE • </span>
-                <span>NOMAD INTEGRITY ENGINE • </span>
-            </div>
+    <!-- ═══════════════════════════════════════
+          CORE PHILOSOPHY — The Protocol Pillars
+          ═══════════════════════════════════════ -->
+    <!-- Removed separate section, moved into #how-it-works -->
+
+    <!-- ── TYPOGRAPHIC COMMAND MARQUEE (AS REQUESTED) ── -->
+    <section class="marquee-section">
+        <div class="marquee-row">
+            <span>IMMUTABLE AI CONSENSUS •</span>
+            <span>SOLANA FINALITY @ SCALE •</span>
+            <span>NOMAD INTEGRITY ENGINE •</span>
+            <span>TRANSFORMING DATA INTO TRUST •</span>
+            <span>IMMUTABLE AI CONSENSUS •</span>
+            <span>SOLANA FINALITY @ SCALE •</span>
+            <span>NOMAD INTEGRITY ENGINE •</span>
+            <span>TRANSFORMING DATA INTO TRUST •</span>
+            <span>IMMUTABLE AI CONSENSUS •</span>
+            <span>SOLANA FINALITY @ SCALE •</span>
+            <span>NOMAD INTEGRITY ENGINE •</span>
+            <span>TRANSFORMING DATA INTO TRUST •</span>
         </div>
-    </div>
+    </section>
 
 
 
     <!-- ═══════════════════════════════════════
          HOW IT WORKS — Pipeline Visualization 
          ═══════════════════════════════════════ -->
-    <section id="how-it-works" class="pipeline-section" aria-label="How the verification pipeline works" style="background: #FFFFFF; position: relative; z-index: 10; min-height: 100vh; display: flex; align-items: center; padding: 120px 0;">
-        <!-- Background Video with Darkening Overlay for Visibility -->
-        <div style="position: absolute; inset: 0; z-index: 1;">
-            <video id="pipe-bg-video" autoplay muted loop playsinline 
-                   style="width: 100%; height: 100%; object-fit: cover; opacity: 0.25; filter: blur(5px);">
-                <source src="https://labs.google/fx/api/og-video/6pa1ad62t0000" type="video/mp4">
-            </video>
-            <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,0.4));"></div>
-        </div>
+    <section id="how-it-works" class="pipeline-section"
+        style="padding: 120px 0; background: #FFFFFF; position: relative; overflow: hidden;">
+        <video id="pipeline-video-bg" autoplay muted loop playsinline class="section-bg-video"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.45; filter: blur(8px); pointer-events: none; z-index: 1;">
+            <source src="https://labs.google/fx/api/og-video/6pa1ad62t0000" type="video/mp4">
+        </video>
 
-        <div class="section-inner" style="position: relative; z-index: 10; width: 100%;">
-            <span class="section-label">The Pipeline</span>
-            <h2 class="section-title">How ProtoQol <span class="accent">Works</span></h2>
-            <p class="section-subtitle">From physical action to immutable proof in under 3 seconds.</p>
+        <div class="section-inner" style="position: relative; z-index: 10;">
+            <!-- Wind Particles Layer -->
+            <div id="wind-layer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden;"></div>
+            <!-- Advanced Glassmorphism Window with Initial Drop States -->
+            <div id="pipeline-window" class="floating-window"
+                style="padding: 60px; background: rgba(255, 255, 255, 0.02); border-radius: 60px; border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(40px) saturate(110%); box-shadow: 0 60px 120px rgba(0,0,0,0.08); position: relative; overflow: hidden; opacity: 1;">
+                <!-- Digital Scanline Effect -->
 
-            <div class="pipeline-grid">
-                <!-- Step 1: Data Ingestion -->
-                <div class="pipe-card reveal">
-                    <div class="card-stage-badge">STAGE 01</div>
-                    <div class="card-inner-v9">
-                        <span class="card-icon-v9" style="background: rgba(0,0,0,0.03); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 16px; margin-bottom: 2rem;">📥</span>
-                        <h3 class="card-title">Data Ingestion</h3>
-                        <p class="card-text">Шлюзовое API для мгновенной передачи ESG-отчетов и IoT данных в систему.</p>
-                        
-                        <div class="card-meta-pills">
-                            <div class="meta-pill">🛡️ AES-256 ENCRYPTION</div>
-                            <div class="meta-pill">⚡ ZERO-FRICTION INGRESS</div>
-                        </div>
-                    </div>
-                    <a href="#pricing" class="card-action-link">Initialize Stream ➔</a>
+                <div style="text-align: center; margin-bottom: 4rem;">
+                    <span class="section-label">Pipeline Schema v2.0</span>
+                    <h2 class="section-title">How ProtoQol <span class="accent">Works</span></h2>
+                    <p class="section-subtitle" style="margin: 0 auto;">From physical action to immutable proof in under
+                        3 seconds.</p>
                 </div>
 
-                <!-- Step 2: AI Council -->
-                <div class="pipe-card reveal reveal-delay-1">
-                    <div class="card-stage-badge">STAGE 02</div>
-                    <div class="card-inner-v9">
-                        <span class="card-icon-v9" style="background: rgba(0,0,0,0.03); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 16px; margin-bottom: 2rem;">⚖️</span>
-                        <h3 class="card-title">AI Council Audit</h3>
-                        <p class="card-text">Три независимых агента (Аудитор, Скептик и Комплаенс) проверяют контент.</p>
+                <div class="pipeline-container">
+                    <div class="pipeline-wrapper" id="infinite-deck">
+                        <!-- 1. Original 20 Cards -->
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 01</div><h3 class="card-title">Effortless Connectivity</h3><p class="card-text">ESG reports and IoT data integrate seamlessly via Nomad API.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 02</div><h3 class="card-title">AI–Biy Consensus</h3><p class="card-text">Gemini 2.0 evaluates every action against ethical mandates.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 03</div><h3 class="card-title">On-Chain Finality</h3><p class="card-text">Immutable proofs crystallized on the Solana ledger.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 04</div><h3 class="card-title">Oracle Resilience</h3><p class="card-text">Decentralized node network ensuring 99.9% uptime.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 05</div><h3 class="card-title">Ethics v2.0</h3><p class="card-text">Modernizing Steppe Law traditions into machine logic.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 06</div><h3 class="card-title">Mandate Registry</h3><p class="card-text">Transparency for funds to track real-world impact.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 07</div><h3 class="card-title">Audit Insights</h3><p class="card-text">Deep-dive analytics for corporate ESG compliance.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 08</div><h3 class="card-title">Neural Biy Council</h3><p class="card-text">Autonomous AI intelligence cross-validating actions.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 09</div><h3 class="card-title">Soulbound Shezhire</h3><p class="card-text">Irrevocable reputation for sustainable leaders.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 10</div><h3 class="card-title">Low-Latency Settlement</h3><p class="card-text">Instant receipts for impact-driven payouts.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 11</div><h3 class="card-title">Governance DAO</h3><p class="card-text">Community-driven protocol upgrades and voting.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 12</div><h3 class="card-title">Multi-Sig Vaults</h3><p class="card-text">Tier-1 security for institutional ESG funding.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 13</div><h3 class="card-title">ZK-Proofs Privacy</h3><p class="card-text">Verifying impact without exposing sensitive data.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 14</div><h3 class="card-title">Carbon Credit Mint</h3><p class="card-text">Direct transformation of deeds into carbon assets.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 15</div><h3 class="card-title">Community Impact</h3><p class="card-text">Local-first metrics for grassroots social change.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 16</div><h3 class="card-title">Validator Health</h3><p class="card-text">Real-time monitoring of audit node performance.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 17</div><h3 class="card-title">Cross-Chain Relay</h3><p class="card-text">Exporting integrity proofs to the entire Web3.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 18</div><h3 class="card-title">Real-Time CCTV</h3><p class="card-text">Visual evidence layers for physical verification.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 19</div><h3 class="card-title">Auditor Wisdom</h3><p class="card-text">Expert-validated AI feedback loops for accuracy.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 20</div><h3 class="card-title">Protocol Pulse</h3><p class="card-text">Final heartbeat of global integrity verification.</p></div>
                         
-                        <div class="audit-progress-wrap">
-                            <div class="progress-cells">
-                                <div class="p-cell active"></div>
-                                <div class="p-cell active"></div>
-                                <div class="p-cell"></div>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; font-size: 0.65rem; font-weight: 800; color: #888;">
-                                <span>ORCHESTRATOR ALPHA</span>
-                                <span style="color: #B371FF;">VERIFYING...</span>
-                            </div>
-                        </div>
+                        <!-- 2. Cloned 20 Cards (for Seamlessness) -->
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 01</div><h3 class="card-title">Effortless Connectivity</h3><p class="card-text">ESG reports and IoT data integrate seamlessly via Nomad API.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 02</div><h3 class="card-title">AI–Biy Consensus</h3><p class="card-text">Gemini 2.0 evaluates every action against ethical mandates.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 03</div><h3 class="card-title">On-Chain Finality</h3><p class="card-text">Immutable proofs crystallized on the Solana ledger.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 04</div><h3 class="card-title">Oracle Resilience</h3><p class="card-text">Decentralized node network ensuring 99.9% uptime.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 05</div><h3 class="card-title">Ethics v2.0</h3><p class="card-text">Modernizing Steppe Law traditions into machine logic.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 06</div><h3 class="card-title">Mandate Registry</h3><p class="card-text">Transparency for funds to track real-world impact.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 07</div><h3 class="card-title">Audit Insights</h3><p class="card-text">Deep-dive analytics for corporate ESG compliance.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 08</div><h3 class="card-title">Neural Biy Council</h3><p class="card-text">Autonomous AI intelligence cross-validating actions.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 09</div><h3 class="card-title">Soulbound Shezhire</h3><p class="card-text">Irrevocable reputation for sustainable leaders.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 10</div><h3 class="card-title">Low-Latency Settlement</h3><p class="card-text">Instant receipts for impact-driven payouts.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 11</div><h3 class="card-title">Governance DAO</h3><p class="card-text">Community-driven protocol upgrades and voting.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 12</div><h3 class="card-title">Multi-Sig Vaults</h3><p class="card-text">Tier-1 security for institutional ESG funding.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 13</div><h3 class="card-title">ZK-Proofs Privacy</h3><p class="card-text">Verifying impact without exposing sensitive data.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 14</div><h3 class="card-title">Carbon Credit Mint</h3><p class="card-text">Direct transformation of deeds into carbon assets.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 15</div><h3 class="card-title">Community Impact</h3><p class="card-text">Local-first metrics for grassroots social change.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 16</div><h3 class="card-title">Validator Health</h3><p class="card-text">Real-time monitoring of audit node performance.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 17</div><h3 class="card-title">Cross-Chain Relay</h3><p class="card-text">Exporting integrity proofs to the entire Web3.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 18</div><h3 class="card-title">Real-Time CCTV</h3><p class="card-text">Visual evidence layers for physical verification.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 19</div><h3 class="card-title">Auditor Wisdom</h3><p class="card-text">Expert-validated AI feedback loops for accuracy.</p></div>
+                        <div class="pipe-card"><div class="card-stage-badge">MOD 20</div><h3 class="card-title">Protocol Pulse</h3><p class="card-text">Final heartbeat of global integrity verification.</p></div>
                     </div>
-                    <a href="#pricing" class="card-action-link">View AI Logic ➔</a>
-                </div>
-
-                <!-- Step 3: Solana Finality -->
-                <div class="pipe-card reveal reveal-delay-2">
-                    <div class="card-stage-badge">STAGE 03</div>
-                    <div class="card-inner-v9">
-                        <span class="card-icon-v9" style="background: rgba(0,0,0,0.03); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 16px; margin-bottom: 2rem;">💎</span>
-                        <h3 class="card-title">Solana Registry</h3>
-                        <p class="card-text">Неизменяемая кристаллизация и запись хэша в блокчейн. Ваша репутация вечна.</p>
-                        
-                        <div style="margin-top: 1.5rem; padding: 12px; background: rgba(0,0,0,0.03); border-radius: 12px; font-family: 'JetBrains Mono'; font-size: 0.7rem; color: #555;">
-                            SOL-HASH: 7xk2...9qLM...v4X
-                        </div>
-                    </div>
-                    <a href="#pricing" class="card-action-link">Explore Ledger ➔</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════
-          B2B INFRASTRUCTURE — Floating Window
-          ═══════════════════════════════════════ -->
-    <section id="infrastructure" class="window-section">
-        <div class="section-inner floating-window">
-            <div class="window-content" style="display: flex; align-items: center; gap: 4rem; padding: 60px;">
-                
-                <!-- Left Content -->
-                <div class="infra-text-content" style="flex: 1;">
-                    <span class="section-label">System Engine v2.0</span>
-                    <h2 class="section-title" style="font-size: 3.5rem; line-height: 0.95; margin: 1.5rem 0;">Real-world <br/>actions.<br/><span class="accent">On-chain truth.</span></h2>
-                    <p class="section-subtitle" style="color: #666; max-width: 440px; margin-bottom: 2.5rem;">
-                        AI-evaluated ESG data crystallized into immutable Solana proofs. Audit-ready. Instant.
-                    </p>
-                    
-                    <!-- Stats Widget -->
-                    <div class="mini-stats-grid">
-                        <div class="mini-stat"><strong>14k</strong><span>Audits</span></div>
-                        <div class="mini-stat"><strong>42ms</strong><span>Latency</span></div>
-                        <div class="mini-stat"><strong>99.9%</strong><span>Uptime</span></div>
-                    </div>
+    <section id="infrastructure" class="window-section" style="padding: 120px 0;">
+        <div class="section-inner floating-window infra-control-center">
+
+            <!-- Protocol Navigation Tabs -->
+            <div class="infra-navigator"
+                style="padding: 2rem 4rem 0; display: flex; gap: 1.5rem;">
+                <button class="infra-tab active" data-tab="core">CORE ENGINE</button>
+                <button class="infra-tab" data-tab="origin">MISSION ORIGIN</button>
+                <button class="infra-tab" data-tab="impact">GLOBAL IMPACT</button>
+            </div>
+
+            <div class="window-content" id="infra-content-shield"
+                style="display: flex; align-items: center; gap: 4rem; padding: 60px; min-height: 500px; transition: all 0.5s ease;">
+
+                <!-- Left Visual (Primary Focal Point) -->
+                <div class="infra-visual-content" style="flex: 1.2; perspective: 1000px; position: relative; height: 100%; min-height: 450px;">
+                    <video src="https://labs.google/fx/api/og-video/50p21hqs20000" autoplay muted loop playsinline
+                        id="infra-video-active" class="whisk-video-final"
+                        style="width: 100%; border-radius: 30px; filter: saturate(1.1); position: absolute; top: 0; left: 0; opacity: 1; z-index: 2;">
+                    </video>
+                    <video src="" autoplay muted loop playsinline
+                        id="infra-video-next" class="whisk-video-final"
+                        style="width: 100%; border-radius: 30px; filter: saturate(1.1); position: absolute; top: 0; left: 0; opacity: 0; z-index: 1;">
+                    </video>
                 </div>
 
-                <!-- Right Visual -->
-                <div class="infra-visual-content" style="flex: 1.2;">
-                    <video 
-                        src="https://labs.google/fx/api/og-video/50p21hqs20000" 
-                        autoplay muted loop playsinline 
-                        class="whisk-video-final" style="width: 100%; border-radius: 30px; filter: saturate(1.1);">
-                    </video>
+                <!-- Right Text Content (Secondary Information Layer) -->
+                <div class="infra-text-content" id="infra-text-dynamic" 
+                     style="flex: 1; position: relative; min-height: 500px; display: flex; align-items: center;">
+                    <!-- CORE TAB (Default) -->
+                    <div class="tab-pane active" id="pane-core" 
+                         style="position: absolute; top: 50%; left: 0; transform: translateY(-50%); width: 100%;">
+                        <span class="section-label">System Engine v2.0</span>
+                        <h2 class="section-title" style="font-size: 3.5rem; line-height: 0.95; margin: 1.5rem 0;">
+                            Real-world <br />actions.<br /><span class="accent">On-chain truth.</span></h2>
+                        <p class="section-subtitle" style="color: #666; max-width: 440px; margin-bottom: 2.5rem;">
+                            AI-evaluated ESG data crystallized into immutable Solana proofs. Audit-ready. Instant.
+                        </p>
+                        <div class="mini-stats-grid">
+                            <div class="mini-stat"><strong>14k</strong><span>Audits</span></div>
+                            <div class="mini-stat"><strong>42ms</strong><span>Latency</span></div>
+                            <div class="mini-stat"><strong>99.9%</strong><span>Uptime</span></div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="pane-origin"
+                        style="display: none; opacity: 0; position: absolute; top: 50%; left: 0; transform: translateY(calc(-50% + 20px)); width: 100%;">
+                        <span class="section-label">Source of Truth</span>
+                        <h2 class="section-title" style="font-size: 3.5rem; line-height: 0.95; margin: 1.5rem 0;">Rooted
+                            in <br />Ethics.<br /><span class="accent">Scale of Integrity.</span></h2>
+                        <p class="section-subtitle" style="color: #666; max-width: 440px; margin-bottom: 2.5rem;">
+                            Протокол ProtoQol переносит фундаментальные принципы доверия в цифровую среду, обеспечивая
+                            прозрачность и неизменность каждого социально значимого действия.
+                        </p>
+                        <div class="founders-badge" style="display: flex; gap: 1rem; align-items: center;">
+                            <div
+                                style="width: 50px; height: 50px; border-radius: 50%; background: #000; color: white; display:flex; align-items:center; justify-content:center; font-weight:800;">
+                                AB</div>
+                            <div>
+                                <h4 style="margin:0;">Alikhan Bakhtybay</h4>
+                                <small style="color:#888;">Founder & System Architect • 17 y.o.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- IMPACT TAB -->
+                    <div class="tab-pane" id="pane-impact"
+                        style="display: none; opacity: 0; position: absolute; top: 50%; left: 0; transform: translateY(calc(-50% + 20px)); width: 100%;">
+                        <span class="section-label">Network Reach</span>
+                        <h2 class="section-title" style="font-size: 3.5rem; line-height: 0.95; margin: 1.5rem 0;">Global
+                            <br />Reach.<br /><span class="accent">Local Trust.</span></h2>
+                        <p class="section-subtitle" style="color: #666; max-width: 440px; margin-bottom: 2.5rem;">
+                            From individual missions to enterprise-wide ESG reporting, our protocol ensures every action
+                            count towards a verifiable future.
+                        </p>
+                        <div class="mini-stats-grid">
+                            <div class="mini-stat"><strong>25+</strong><span>Countries</span></div>
+                            <div class="mini-stat"><strong>1M</strong><span>Etchings</span></div>
+                            <div class="mini-stat"><strong>100%</strong><span>Transparency</span></div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -458,15 +1454,18 @@
     <!-- ═══════════════════════════════════════
           JUICY PRICING GRID — Floating Window
           ═══════════════════════════════════════ -->
-    <section id="pricing" class="window-section" style="padding: 100px 0; background: none; position: relative; overflow: hidden;">
+    <section id="pricing" class="window-section"
+        style="padding: 100px 0; background: none; position: relative; overflow: hidden;">
         <!-- Pricing Layer 1: Enhanced Atmospheric Background -->
-        <div class="pricing-bg-layer" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.25; filter: blur(10px);">
-            <video src="https://labs.google/fx/api/og-video/5s1d0m2df0000" autoplay muted loop playsinline style="width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply;"></video>
+        <div class="pricing-bg-layer"
+            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.25; filter: blur(10px);">
+            <video src="https://labs.google/fx/api/og-video/5s1d0m2df0000" autoplay muted loop playsinline
+                style="width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply;"></video>
         </div>
 
         <div class="section-inner pricing-window-v7" style="position: relative; z-index: 1;">
             <div class="pricing-grid-v7">
-                
+
                 <!-- 1. WANDERER Tier -->
                 <div class="iridescent-card">
                     <div class="card-content">
@@ -477,102 +1476,161 @@
                             <span class="card-price-period">/mo</span>
                         </div>
                         <ul class="card-features-v8">
-                            <li>1,000 API Verifications /mo</li>
-                            <li>Solana Devnet Etching</li>
-                            <li>Single AI-Biy Node (Base checks)</li>
-                            <li>Community Discord Support</li>
+                            <li>✓ 1,000 API Verifications /mo</li>
+                            <li>✓ Solana Devnet Etching</li>
+                            <li>✓ Single AI-Biy Node (Base checks)</li>
+                            <li>✓ Community Discord Support</li>
                         </ul>
-                        <button class="btn-card-v8 btn-ghost-v8" onclick="selectTier('wanderer')">Start Building</button>
+                        <button class="pricing-btn btn-ghost-v8">BUILD NOW</button>
                     </div>
                 </div>
 
                 <!-- 2. BIY Tier (Highlighted) -->
                 <div class="iridescent-card card-biy-v8">
+                    <!-- Corner Stars -->
+                    <span class="corner-star" style="top:12px;left:12px;animation-delay:0.2s;color:#00F0FF;text-shadow: 0 0 6px #00F0FF">✦</span>
+                    <span class="corner-star" style="top:12px;right:12px;animation-delay:0.6s;color:#FFD700;text-shadow: 0 0 6px #FFD700">★</span>
+                    <span class="corner-star" style="bottom:12px;left:12px;animation-delay:1.0s;color:#FF69B4;text-shadow: 0 0 6px #FF69B4">✦</span>
+                    <span class="corner-star" style="bottom:12px;right:12px;animation-delay:1.4s;color:#B371FF;text-shadow: 0 0 8px #B371FF">✧</span>
                     <div class="card-biy-badge">MOST POPULAR</div>
                     <div class="card-content">
                         <h3 class="card-title-v8">BIY</h3>
-                        <p class="card-subtitle-v8">Corporate ESG compliance engine.</p>
+                        <p class="card-subtitle-v8">Corporate compliance engine.</p>
                         <div class="card-price-wrap">
-                            <span class="card-price-val accent-price">$500</span>
+                            <span class="card-price-val">$500</span>
                             <span class="card-price-period">/mo</span>
                         </div>
                         <ul class="card-features-v8">
-                            <li>50,000 API Verifications /mo</li>
-                            <li>Solana Mainnet (Gasless TXs included)</li>
-                            <li>Multi-Agent Consensus (3 AI Nodes)</li>
-                            <li>Live Solscan TX Dashboard</li>
+                            <li>✓ 50,000 Audits /mo</li>
+                            <li>✓ Solana Mainnet</li>
+                            <li>✓ 3-AI Node Audit</li>
+                            <li>✓ Solscan TX Log</li>
                         </ul>
-                        <button class="btn-card-v8 btn-primary-v8" onclick="selectTier('biy')">SCALE UP</button>
-
+                        <button class="pricing-btn btn-primary-v8">SCALE UP</button>
                     </div>
                 </div>
 
-                <!-- 3. KHAN Tier -->
+                <!-- 3. NOMAD Tier -->
                 <div class="iridescent-card">
                     <div class="card-content">
-                        <h3 class="card-title-v8">KHAN</h3>
-                        <p class="card-subtitle-v8">For states & global enterprises.</p>
+                        <h3 class="card-title-v8">NOMAD</h3>
+                        <p class="card-subtitle-v8">Custom global infrastructure.</p>
                         <div class="card-price-wrap">
                             <span class="card-price-val">SCALE</span>
                         </div>
-
                         <ul class="card-features-v8">
-                            <li>Unlimited Verifications</li>
-                            <li>Dedicated Validator Node</li>
-                            <li>Custom AI-Biy Fine-tuning</li>
-                            <li>24/7 Dedicated SLA Support</li>
+                            <li>✓ Unlimited Volume</li>
+                            <li>✓ Dedicated Nodes</li>
+                            <li>✓ White Glove Init</li>
+                            <li>✓ 24/7 SLA Support</li>
                         </ul>
-                        <button class="btn-card-v8 btn-dark-v8" onclick="selectTier('khan')">Contact Sales</button>
+                        <button class="pricing-btn btn-dark-v8">FOUNDERS</button>
                     </div>
                 </div>
 
             </div>
         </div>
     </section>
-
 
 
 
     <!-- ═══════════════════════════════════════
-          TACTICAL MAP (STAYING IN THE ENGINE)
+          CONTACT & INQUIRY — Connect with ProtoQol
           ═══════════════════════════════════════ -->
-    <section class="steppe-activity" aria-label="Network Activity Map">
-        <div class="section-inner">
-            <div class="steppe-map" role="img" aria-label="Aktobe region network node">
-                <div class="map-aktobe-dot" aria-hidden="true"></div>
-                <div id="aktobe-fire" class="signal-fire" aria-hidden="true"></div>
-                <div class="map-label">[REGION: AKTOBE_IT_HUB]</div>
+    <!-- ═══════════════════════════════════════
+          DYNAMIC MARQUEE — The Pulse of Integrity
+          ═══════════════════════════════════════ -->
+    <div class="integrity-ticker" style="background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); padding: 2.2rem 0; overflow: hidden; position: relative; z-index: 10; margin: 60px 0; border-top: 1px solid rgba(255,255,255,0.8); border-bottom: 1px solid rgba(255,255,255,0.8); box-shadow: 0 10px 40px rgba(0,0,0,0.05);">
+        <div class="ticker-wrapper" style="display: flex; white-space: nowrap; animation: ticker-scroll 18s linear infinite;">
+            <div class="ticker-item" style="font-size: 1.6rem; font-weight: 900; color: #111; letter-spacing: 6px; padding: 0 5rem; text-transform: uppercase; font-family: 'Inter', sans-serif;">
+                SOLANA INTEGRITY <span style="color: #6366f1; margin: 0 1rem;">•</span> VERIFIABLE PROOF <span style="color: #a855f7; margin: 0 1rem;">•</span> ETHICS AS A SERVICE <span style="color: #10b981; margin: 0 1rem;">•</span> IMMUTABLE DATA <span style="color: #3b82f6; margin: 0 1rem;">•</span> PROTOQOL ENGINE <span style="color: #8b5cf6; margin: 0 1rem;">•</span> AI CONSENSUS
+            </div>
+            <div class="ticker-item" style="font-size: 1.6rem; font-weight: 900; color: #111; letter-spacing: 6px; padding: 0 5rem; text-transform: uppercase; font-family: 'Inter', sans-serif;">
+                SOLANA INTEGRITY <span style="color: #6366f1; margin: 0 1rem;">•</span> VERIFIABLE PROOF <span style="color: #a855f7; margin: 0 1rem;">•</span> ETHICS AS A SERVICE <span style="color: #10b981; margin: 0 1rem;">•</span> IMMUTABLE DATA <span style="color: #3b82f6; margin: 0 1rem;">•</span> PROTOQOL ENGINE <span style="color: #8b5cf6; margin: 0 1rem;">•</span> AI CONSENSUS
             </div>
         </div>
-    </section>
+    </div>
 
+    <style>
+        @keyframes ticker-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+    </style>
 
-    <!-- ═══ IDENTITY VAULT ═══ -->
-    <section id="proofs" class="identity-vault" aria-label="Crystallized reputation proofs">
-        <div class="section-inner">
-            <div class="vault-header">
-                <div class="reveal">
-                    <span class="section-label reveal reveal-delay-1">The Great Shezhire</span>
-                    <h2 class="section-title reveal reveal-delay-2">Crystallized <span class="accent">Proofs</span></h2>
-                </div>
-                <div class="impact-counter">
-                    <span class="impact-label">Network Impact</span>
-                    <div id="stat-impact" class="impact-value" aria-live="polite">14,208</div>
+    <section id="contact" class="contact-section" style="padding: 160px 0; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); position: relative; overflow: hidden; border-top: 1px solid rgba(255,255,255,0.5);">
+        
+        <!-- Soft Atmospheric Auras (Heavy Blur & Opaque Glow) -->
+        <div class="contact-bg-corner tl" style="position: absolute; top: -250px; left: -250px; width: 1000px; height: 1000px; z-index: 0; opacity: 0.6; filter: blur(80px); pointer-events: none;">
+            <video src="https://labs.google/fx/api/og-video/08uf1g77f0000" autoplay muted loop playsinline style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"></video>
+        </div>
+        <div class="contact-bg-corner br" style="position: absolute; bottom: -250px; right: -250px; width: 1000px; height: 1000px; z-index: 0; opacity: 0.6; filter: blur(80px); pointer-events: none; transform: rotate(180deg);">
+            <video src="https://labs.google/fx/api/og-video/08uf1g77f0000" autoplay muted loop playsinline style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"></video>
+        </div>
+
+        <div class="bg-typography" style="position: absolute; bottom: -5%; left: 5%; font-size: 15rem; font-weight: 900; color: rgba(0,0,0,0.02); pointer-events: none; z-index: 0; line-height: 1;">CONTACT</div>
+        
+        <div class="section-inner" style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 6rem; position: relative; z-index: 1;">
+            
+            <!-- Left: Contact Details -->
+            <div class="">
+                <div class="section-label">СВЯЗАТЬСЯ</div>
+                <h2 class="section-title">Есть вопросы? <span class="accent">Мы на связи.</span></h2>
+                <p class="section-subtitle" style="margin-bottom: 4rem;">Хотите внедрить ProtoQol в свой бизнес или просто узнать больше? Напишите нам напрямую.</p>
+                
+                <div class="contact-details" style="display: flex; flex-direction: column; gap: 2rem;">
+                    <div style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(59, 130, 246, 0.05); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #3b82f6;">✉️</div>
+                        <div>
+                            <div style="font-size: 0.8rem; font-weight: 700; color: #94A3B8; text-transform: uppercase;">Email</div>
+                            <a href="mailto:riskulovakorpus@gmail.com" style="font-size: 1.2rem; font-weight: 800; color: #1E293B; text-decoration: none; transition: 0.3s;" onmouseover="this.style.color='#3B82F6'" onmouseout="this.style.color='#1E293B'">riskulovakorpus@gmail.com</a>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(139, 92, 246, 0.05); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #8b5cf6;">📱</div>
+                        <div>
+                            <div style="font-size: 0.8rem; font-weight: 700; color: #94A3B8; text-transform: uppercase;">Телефон</div>
+                            <a href="tel:87711872363" style="font-size: 1.2rem; font-weight: 800; color: #1E293B; text-decoration: none; transition: 0.3s;" onmouseover="this.style.color='#8B5CF6'" onmouseout="this.style.color='#1E293B'">8 (771) 187 23 63</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="vault-container" id="sbt-vault" role="list" aria-label="Soulbound token badges"></div>
-            <div id="vault-empty" class="vault-empty" hidden>
-                <p>No crystals yet. Complete a ritual to earn your first proof.</p>
+
+            <!-- Right: Inquiry Form (Glassmorphism Effect) -->
+            <div class="" style="background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.7); border-radius: 40px; padding: 4rem; box-shadow: 0 40px 100px rgba(0,0,0,0.05); position: relative; z-index: 2;">
+                <form action="#" method="POST" style="display: flex; flex-direction: column; gap: 2rem;">
+                    <div>
+                        <label for="name" style="display: block; font-size: 0.9rem; font-weight: 800; color: #1E293B; margin-bottom: 0.8rem; letter-spacing: 0.5px;">ВАШЕ ИМЯ</label>
+                        <input type="text" id="name" name="name" placeholder="Как к вам обращаться?" style="width: 100%; padding: 1.2rem 1.5rem; border-radius: 12px; border: 2px solid #F1F5F9; background: #F8FAFC; outline: none; transition: 0.3s; font-family: inherit; font-weight: 600;" onfocus="this.style.borderColor='#3B82F6'; this.style.background='#FFFFFF'">
+                    </div>
+                    
+                    <div>
+                        <label for="email" style="display: block; font-size: 0.9rem; font-weight: 800; color: #1E293B; margin-bottom: 0.8rem; letter-spacing: 0.5px;">ЭЛЕКТРОННАЯ ПОЧТА</label>
+                        <input type="email" id="email" name="email" placeholder="example@mail.com" style="width: 100%; padding: 1.2rem 1.5rem; border-radius: 12px; border: 2px solid #F1F5F9; background: #F8FAFC; outline: none; transition: 0.3s; font-family: inherit; font-weight: 600;" onfocus="this.style.borderColor='#3B82F6'; this.style.background='#FFFFFF'">
+                    </div>
+
+                    <div>
+                        <label for="message" style="display: block; font-size: 0.9rem; font-weight: 800; color: #1E293B; margin-bottom: 0.8rem; letter-spacing: 0.5px;">ВАШЕ ОБРАЩЕНИЕ</label>
+                        <textarea id="message" name="message" rows="4" placeholder="Расскажите о вашей задаче..." style="width: 100%; padding: 1.2rem 1.5rem; border-radius: 12px; border: 2px solid #F1F5F9; background: #F8FAFC; outline: none; transition: 0.3s; font-family: inherit; font-weight: 600; resize: vertical;" onfocus="this.style.borderColor='#3B82F6'; this.style.background='#FFFFFF'"></textarea>
+                    </div>
+
+                    <button type="submit" style="width: 100%; padding: 1.2rem; border-radius: 12px; border: none; background: #0F172A; color: #FFFFFF; font-weight: 800; font-size: 1rem; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; transition: 0.4s; margin-top: 1rem; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);" onmouseover="this.style.transform='translateY(-5px)'; this.style.background='#1E293B'" onmouseout="this.style.transform='translateY(0px)'; this.style.background='#0F172A'">ОТПРАВИТЬ СООБЩЕНИЕ</button>
+                </form>
             </div>
+            
         </div>
     </section>
 
     <!-- ═══ FOOTER ═══ -->
-    <footer class="footer" role="contentinfo">
-        <div class="section-inner footer-inner" style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 4rem; align-items: start;">
+    <footer class="footer" role="contentinfo" style="background: #FFFFFF; border-top: 1px solid rgba(0,0,0,0.05); position: relative; overflow: hidden;">
+        <!-- Subtly lively footer glass background -->
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 10% 10%, rgba(179, 113, 255, 0.03) 0%, transparent 60%); z-index: 0; pointer-events: none;"></div>
+        <div class="section-inner footer-inner"
+            style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 4rem; align-items: start; position: relative; z-index: 1;">
             <div class="footer-brand">
                 <span class="logo-text" style="font-size:1.2rem">ProtoQol</span>
-                <p class="footer-text">© 2026 Digital Zheti Zhargy Engine.<br/>Built for Solana Decentralathon.</p>
+                <p class="footer-text">© 2026 Digital Zheti Zhargy Engine.<br />Built for Solana Decentralathon.</p>
             </div>
             <div class="footer-col">
                 <h4 class="footer-heading">Protocol</h4>
@@ -582,72 +1640,609 @@
             </div>
             <div class="footer-col">
                 <h4 class="footer-heading">Connect</h4>
-                <a href="https://t.me/qaiyrym_bot" target="_blank" rel="noopener noreferrer" class="footer-link">Telegram Bot ↗</a>
-                <a href="https://explorer.solana.com" target="_blank" rel="noopener noreferrer" class="footer-link--dim">Solana Explorer ↗</a>
-                <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="footer-link--dim">GitHub ↗</a>
+                <a href="https://t.me/qaiyrym_bot" target="_blank" rel="noopener noreferrer"
+                    class="footer-link">Telegram Bot ↗</a>
+                <a href="https://explorer.solana.com" target="_blank" rel="noopener noreferrer"
+                    class="footer-link--dim">Solana Explorer ↗</a>
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="footer-link--dim">GitHub
+                    ↗</a>
             </div>
         </div>
     </footer>
 
     <!-- Animation Libraries (Leonardo.ai Style) -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-        if (typeof gsap === 'undefined') return;
-        gsap.registerPlugin(ScrollTrigger);
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof gsap === 'undefined') return;
+            gsap.registerPlugin(ScrollTrigger);
 
-        // Card Scaling Reveal
-        gsap.utils.toArray('.pipe-card, .juicy-card').forEach((card, i) => {
-            gsap.from(card, {
+            const GLITTER_COLORS = ['#00F0FF', '#B371FF', '#FF00E5', '#00FFA3', '#FFD700'];
+            function spawnGlitter(el) {
+                const rect = el.getBoundingClientRect();
+                for (let i = 0; i < 15; i++) {
+                    const g = document.createElement('div');
+                    g.className = 'glitter';
+                    const color = GLITTER_COLORS[Math.floor(Math.random() * GLITTER_COLORS.length)];
+                    const x = rect.left + Math.random() * rect.width;
+                    const y = rect.top + Math.random() * rect.height;
+                    const dx = (Math.random() - 0.5) * 120;
+                    const dy = (Math.random() - 0.5) * 120;
+                    const dur = 0.5 + Math.random() * 0.5;
+                    
+                    g.style.cssText = `
+                        position: fixed; left: ${x}px; top: ${y}px; width: 4px; height: 4px;
+                        background: ${color}; border-radius: 50%; box-shadow: 0 0 8px ${color};
+                        pointer-events: none; z-index: 9999; --dx: ${dx}px; --dy: ${dy}px;
+                        animation: glitterAnim ${dur}s ease-out forwards;
+                    `;
+                    document.body.appendChild(g);
+                    setTimeout(() => g.remove(), dur * 1000);
+                }
+            }
+
+            // Card Scaling Reveal
+            gsap.utils.toArray('.pipe-card, .juicy-card').forEach((card, i) => {
+                gsap.from(card, {
+                    scrollTrigger: {
+                        trigger: card,
+                        start: "top bottom-=50",
+                        toggleActions: "play none none reverse",
+                    },
+                    opacity: 0,
+                    y: 50,
+                    scale: 0.9,
+                    duration: 0.8,
+                    ease: "back.out(1.7)",
+                    delay: i * 0.1
+                });
+            });
+
+            // Parallax Marquee
+            gsap.to('.marquee-content', {
                 scrollTrigger: {
-                    trigger: card,
-                    start: "top bottom-=50",
-                    toggleActions: "play none none reverse",
+                    trigger: '.marquee-transition',
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: true
                 },
+                x: -200,
+                ease: "none"
+            });
+
+            // Hero Text Separation & Blur
+            gsap.to('.line-l', {
+                scrollTrigger: {
+                    trigger: '#hero',
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: 1
+                },
+                x: -150,
                 opacity: 0,
-                y: 50,
-                scale: 0.9,
-                duration: 0.8,
-                ease: "back.out(1.7)",
-                delay: i * 0.1
+                filter: "blur(20px)"
+            });
+            gsap.to('.line-r', {
+                scrollTrigger: {
+                    trigger: '#hero',
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: 1
+                },
+                x: 150,
+                opacity: 0,
+                filter: "blur(20px)"
+            });
+
+            // 🪄 Pricing Tilt Effect & Smooth Assembly
+            const cards = document.querySelectorAll('.iridescent-card');
+            cards.forEach(card => {
+                const elements = {
+                    title: card.querySelector('.card-title-v8'),
+                    subtitle: card.querySelector('.card-subtitle-v8'),
+                    features: card.querySelector('.card-features-v8'),
+                    button: card.querySelector('.btn-card-v8'),
+                    price: card.querySelector('.card-price-wrap')
+                };
+
+                card.addEventListener('mousemove', e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = (y - centerY) / 12;
+                    const rotateY = (centerX - x) / 12;
+                    
+                    gsap.to(card, {
+                        rotateX: rotateX,
+                        rotateY: rotateY,
+                        scale: 1.05,
+                        duration: 0.5,
+                        ease: "power2.out",
+                        overwrite: "auto"
+                    });
+                });
+
+                card.addEventListener('mouseenter', () => {
+                    // Staggered assembly - Luxurious & Smooth
+                    const tl = gsap.timeline({ overwrite: "auto" });
+                    
+                    tl.to(elements.price, { 
+                        scale: 1, 
+                        margin: "0 0 1.2rem 0", 
+                        duration: 0.8, 
+                        ease: "expo.out" 
+                    })
+                    .to([elements.title, elements.subtitle], { 
+                        opacity: 1, 
+                        maxHeight: 120, 
+                        y: 0, 
+                        filter: "blur(0px)", 
+                        stagger: 0.1, 
+                        duration: 0.6,
+                        ease: "expo.out"
+                    }, "-=0.6")
+                    .to(elements.features, { 
+                        opacity: 1, 
+                        maxHeight: 400, 
+                        y: 0, 
+                        filter: "blur(0px)", 
+                        duration: 0.8,
+                        ease: "expo.out"
+                    }, "-=0.5")
+                    .to(elements.button, { 
+                        opacity: 1, 
+                        maxHeight: 100, 
+                        y: 0, 
+                        filter: "blur(0px)", 
+                        duration: 0.6,
+                        ease: "expo.out"
+                    }, "-=0.4");
+                    
+                    spawnGlitter(card);
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    gsap.killTweensOf([card, elements.title, elements.subtitle, elements.features, elements.button, elements.price]);
+                    
+                    gsap.to(card, {
+                        rotateX: 0, rotateY: 0, scale: 1,
+                        duration: 0.8, ease: "power2.out"
+                    });
+                    
+                    // Reverse assembly - Smooth Dissolve
+                    gsap.to([elements.title, elements.subtitle, elements.features, elements.button], {
+                        opacity: 0, maxHeight: 0, y: 10, filter: "blur(8px)",
+                        duration: 0.8, ease: "expo.out"
+                    });
+                    
+                    gsap.to(elements.price, { scale: 1.6, margin: "auto", duration: 0.8, ease: "expo.out" });
+                });
+            });
+
+            // 🎢 GSAP Bullet-Proof Infinite Loop (Industrial Deck)
+            const wrapper = document.querySelector('#infinite-deck');
+            const container = document.querySelector('.pipeline-container');
+            
+            if (wrapper && container) {
+                // Force all cards visible - override any reveal system
+                wrapper.querySelectorAll('.pipe-card').forEach(c => {
+                    c.style.opacity = '1';
+                    c.style.transform = '';
+                    c.style.visibility = 'visible';
+                });
+
+                // Wait for full render before measuring
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        const totalWidth = wrapper.scrollWidth / 2;
+                        if (totalWidth <= 0) return;
+
+                        const loop = gsap.to(wrapper, {
+                            x: -totalWidth,
+                            duration: 35,
+                            ease: "none",
+                            repeat: -1,
+                            onRepeat: () => {
+                                // Hard-reset prevents float drift
+                                gsap.set(wrapper, { x: 0 });
+                            }
+                        });
+                        
+                        // Slow to near-stop on hover, snap back on leave
+                        container.addEventListener('mouseenter', () => {
+                            gsap.to(loop, { timeScale: 0.08, duration: 0.8, ease: "power2.out" });
+                        });
+                        container.addEventListener('mouseleave', () => {
+                            gsap.to(loop, { timeScale: 1, duration: 1.2, ease: "power2.inOut" });
+                        });
+                    });
+                });
+            }
+
+            // 📟 Infrastructure Tab Controller (Cinematic Orchestration)
+            const tabs = document.querySelectorAll('.infra-tab');
+            const panes = document.querySelectorAll('.tab-pane');
+            let videoActive = document.querySelector('#infra-video-active');
+            let videoNext = document.querySelector('#infra-video-next');
+            const windowContent = document.querySelector('#infra-content-shield');
+            
+            const videoMap = {
+                core: "https://labs.google/fx/api/og-video/50p21hqs20000",
+                origin: "https://labs.google/fx/api/og-video/7m4gh704c0000",
+                impact: "https://labs.google/fx/api/og-video/218no27ph0000"
+            };
+
+            // Ensure content is on top of videos
+            if (windowContent) windowContent.style.zIndex = "10";
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    if (tab.classList.contains('active')) return;
+                    const target = tab.dataset.tab;
+                    
+                    const currentPane = document.querySelector('.tab-pane.active') || document.querySelector('.tab-pane[style*="display: block"]');
+                    const targetPane = document.querySelector(`#pane-${target}`) || document.querySelector(`.tab-pane[data-pane="${target}"]`);
+                    
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    gsap.killTweensOf([windowContent, videoActive, videoNext, '.tab-pane', '.tab-pane *']);
+
+                    // 1. DIRECTIONAL SLIDE
+                    const slideDir = target === 'origin' ? -60 : 60;
+
+                    const tl = gsap.timeline();
+
+                    // Prepare target (invisible but block)
+                    gsap.set(targetPane, { display: 'block', opacity: 1 });
+                    gsap.set(targetPane.querySelectorAll('*'), { opacity: 0, x: slideDir, filter: 'blur(15px)' });
+
+                    // Phase 1: Fast Slide Out & Blur
+                    tl.to(currentPane.querySelectorAll('*'), { 
+                        opacity: 0, x: -slideDir, filter: 'blur(15px)', stagger: 0.03, duration: 0.3, ease: "power2.in" 
+                    });
+
+                    tl.to(windowContent, {
+                        opacity: 0.7, scale: 0.98, filter: 'blur(10px)', duration: 0.3, ease: "power2.inOut",
+                        onComplete: () => {
+                            // Technical Swaps
+                            panes.forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+                            targetPane.classList.add('active');
+                            targetPane.style.display = 'block';
+                            windowContent.style.flexDirection = (target === 'origin') ? 'row-reverse' : 'row';
+                        }
+                    }, "-=0.15");
+
+                    // Phase 2: Snap In & Clarify
+                    tl.to(targetPane.querySelectorAll('*'), {
+                        opacity: 1, x: 0, filter: 'blur(0px)', stagger: 0.05, duration: 0.6, ease: "expo.out"
+                    }, "-=0.2");
+
+                    tl.to(windowContent, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.5 }, "-=0.4");
+
+                    // 2. KINETIC VIDEO SYNC
+                    if (videoNext && videoActive) {
+                        videoNext.src = videoMap[target];
+                        videoNext.load();
+                        gsap.to(videoActive, { opacity: 0, scale: 1.1, x: -slideDir/2, duration: 1.2, ease: "power2.inOut" });
+                        gsap.fromTo(videoNext, 
+                            { opacity: 0, scale: 0.9, x: slideDir/2 },
+                            { opacity: 1, scale: 1, x: 0, duration: 1.2, ease: "power2.inOut" }
+                        );
+                        const temp = videoActive;
+                        videoActive = videoNext;
+                        videoNext = temp;
+                    }
+                });
+            });
+
+            // 💨 Dynamic Wind Particle Spawner
+            const windLayer = document.querySelector('#wind-layer');
+            if(windLayer) {
+                for(let i=0; i<40; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'wind-particle';
+                    particle.style.top = Math.random() * 100 + '%';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 10 + 's';
+                    particle.style.opacity = Math.random() * 0.4;
+                    windLayer.appendChild(particle);
+                }
+            }
+
+            // Suble tilt for Infra Window
+            const infraWindow = document.querySelector('.infra-control-center');
+            if (infraWindow) {
+                infraWindow.addEventListener('mousemove', e => {
+                    const rect = infraWindow.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width - 0.5;
+                    const y = (e.clientY - rect.top) / rect.height - 0.5;
+                    gsap.to(infraWindow, {
+                        rotateY: x * 2,
+                        rotateX: -y * 2,
+                        duration: 0.5
+                    });
+                });
+                infraWindow.addEventListener('mouseleave', () => {
+                    gsap.to(infraWindow, { rotateX: 0, rotateY: 0, duration: 0.5 });
+                });
+            }
+
+            // ✨ Spark Effect Logic 
+            document.addEventListener('mousedown', (e) => {
+                const colors = ['#00F0FF', '#B371FF', '#FFFFFF'];
+                for (let i = 0; i < 8; i++) {
+                    const spark = document.createElement('div');
+                    spark.className = 'spark';
+                    document.body.appendChild(spark);
+                    const size = Math.random() * 4 + 2;
+                    const dx = (Math.random() - 0.5) * 200;
+                    const dy = (Math.random() - 0.5) * 200;
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    spark.style.left = `${e.pageX}px`;
+                    spark.style.top = `${e.pageY}px`;
+                    spark.style.width = `${size}px`;
+                    spark.style.height = `${size}px`;
+                    spark.style.background = color;
+                    spark.style.boxShadow = `0 0 10px ${color}, 0 0 20px ${color}`;
+                    spark.style.setProperty('--dx', `${dx}px`);
+                    spark.style.setProperty('--dy', `${dy}px`);
+                    setTimeout(() => spark.remove(), 800);
+                }
+            });
+        });
+    </script>
+    <!-- Detail Modals for Pillars -->
+    <div id="pillar-modal-overlay" class="modal-overlay"></div>
+    <div id="pillar-modal" class="about-modal" style="max-width: 600px;">
+        <button class="btn-close-modal" id="close-pillar-modal">✕</button>
+        <div id="pillar-content">
+            <!-- Dynamic Content -->
+        </div>
+    </div>
+    <!-- X-RAY CONSENSEUS INSPECTOR MODAL -->
+    <div id="inspector-overlay" class="modal-overlay" style="z-index: 3000;"></div>
+    <div id="consensus-inspector" class="consensus-inspector">
+        <div class="ci-header">
+            <span>[ PROTOQOL_ENGINE: CONSENSUS_LOGS ]</span>
+            <button class="btn-close-modal" id="close-inspector" style="top: 1rem; right: 1rem; width: 30px; height: 30px;">✕</button>
+        </div>
+        <div id="ci-body" class="ci-body">
+            <!-- Typographic Dialogue Injector -->
+            <div id="ci-loader" class="ci-deciphering" style="display: none;">
+                <div class="cube-spinner" style="width: 40px; height: 40px; border: 2px solid #00FFA3; border-radius: 50%; border-top-color: transparent; animation: spin 1s linear infinite;"></div>
+                <span>DECIPHERING_CONSENSUS...</span>
+            </div>
+        </div>
+        <div style="border-top: 1px solid rgba(0, 255, 163, 0.3); padding-top: 1rem; font-size: 0.7rem; opacity: 0.6; color: #00FFA3;">
+            VERIFICATION_COMPLETE // CONSENSUS_ARCHIVED // NO_ANOMALIES_DETECTED
+        </div>
+    </div>
+
+    <!-- ✨ MEGA ANIMATION ENGINE ✨ -->
+    <div id="cursor-glow"></div>
+    <script>
+    (() => {
+        'use strict';
+
+        // ── 1. MAGNETIC CURSOR GLOW ────────────────────────
+        const cursorGlow = document.getElementById('cursor-glow');
+        if (cursorGlow) {
+            let mx = 0, my = 0, cx = 0, cy = 0;
+            document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+            const animCursor = () => {
+                cx += (mx - cx) * 0.12;
+                cy += (my - cy) * 0.12;
+                cursorGlow.style.left = cx + 'px';
+                cursorGlow.style.top  = cy + 'px';
+                requestAnimationFrame(animCursor);
+            };
+            animCursor();
+
+            // Grow on hover hover interactive elements
+            document.querySelectorAll('button, a, .iridescent-card, .infra-tab').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursorGlow.style.width  = '60px';
+                    cursorGlow.style.height = '60px';
+                    cursorGlow.style.background = 'radial-gradient(circle, rgba(0,240,255,0.5), transparent)';
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursorGlow.style.width  = '20px';
+                    cursorGlow.style.height = '20px';
+                    cursorGlow.style.background = 'radial-gradient(circle, rgba(179,113,255,0.6), transparent)';
+                });
+            });
+        }
+
+        // ── 2. MEGA CLICK GLITTER BURST ────────────────────
+        const GLITTER_COLORS = ['#00F0FF', '#7FFFD4', '#E0B0FF', '#ADD8E6', '#B371FF', '#E6E6FA', '#FFFFFF'];
+        document.addEventListener('click', e => {
+            for (let i = 0; i < 20; i++) {
+                const g = document.createElement('div');
+                g.className = 'glitter';
+                const color = GLITTER_COLORS[Math.floor(Math.random() * GLITTER_COLORS.length)];
+                const size  = 3 + Math.random() * 7;
+                const angle = Math.random() * 360;
+                const dist  = 40 + Math.random() * 120;
+                const dx    = Math.cos(angle * Math.PI/180) * dist;
+                const dy    = Math.sin(angle * Math.PI/180) * dist;
+                const dur   = 0.5 + Math.random() * 0.6;
+                g.style.cssText = `
+                    left:${e.clientX}px; top:${e.clientY}px;
+                    width:${size}px; height:${size}px;
+                    background:${color};
+                    box-shadow: 0 0 6px ${color};
+                    --dx:${dx}px; --dy:${dy}px;
+                    --rot:${angle + 180}deg;
+                    --dur:${dur}s;
+                `;
+                document.body.appendChild(g);
+                setTimeout(() => g.remove(), dur * 1000 + 100);
+            }
+
+            // Regular sparks too
+            for (let i = 0; i < 8; i++) {
+                const s = document.createElement('div');
+                s.className = 'spark';
+                const color = GLITTER_COLORS[Math.floor(Math.random() * GLITTER_COLORS.length)];
+                const size  = 2 + Math.random() * 5;
+                const dx    = (Math.random() - 0.5) * 180;
+                const dy    = (Math.random() - 0.5) * 180;
+                s.style.cssText = `
+                    left:${e.clientX}px; top:${e.clientY}px;
+                    width:${size}px; height:${size}px;
+                    background:${color};
+                    box-shadow: 0 0 8px ${color}, 0 0 16px ${color};
+                    --dx:${dx}px; --dy:${dy}px;
+                `;
+                document.body.appendChild(s);
+                setTimeout(() => s.remove(), 750);
+            }
+        });
+
+        // ── 3. AMBIENT FLOATING SPARKLES ───────────────────
+        const spawnAmbientSparkle = () => {
+            const s = document.createElement('div');
+            s.className = 'ambient-sparkle';
+            const color = GLITTER_COLORS[Math.floor(Math.random() * GLITTER_COLORS.length)];
+            const x     = Math.random() * window.innerWidth;
+            const travel  = -(60 + Math.random() * 100);
+            const travel2 = travel - 40;
+            const dur   = 3 + Math.random() * 4;
+            const delay = Math.random() * 2;
+            s.style.cssText = `
+                left:${x}px; bottom:0;
+                background:${color};
+                box-shadow: 0 0 4px ${color};
+                --dur:${dur}s; --delay:${delay}s;
+                --travel:${travel}px; --travel2:${travel2}px;
+            `;
+            document.body.appendChild(s);
+            setTimeout(() => s.remove(), (dur + delay) * 1000 + 200);
+        };
+        setInterval(spawnAmbientSparkle, 400);
+
+        // ── 4. BOUNCY SCROLL REVEAL ─────────────────────────
+        const revealTargets = [
+            '.section-title',
+            '.section-subtitle', 
+            '.section-label',
+            '.pipe-card',
+            '.team-card',
+            '.mini-stat',
+            '.contact-item',
+            '.infra-tab',
+            '.stat-card'
+        ];
+
+        const observerOpts = { threshold: 0.15, rootMargin: '0px 0px -40px 0px' };
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const delay = (parseFloat(el.dataset.revealDelay) || 0);
+                    setTimeout(() => {
+                        el.style.transition = `opacity 0.6s cubic-bezier(0.175,0.885,0.32,1.5) ${delay}ms, transform 0.6s cubic-bezier(0.175,0.885,0.32,1.5) ${delay}ms`;
+                        el.style.opacity = '1';
+                        el.style.transform = 'translateY(0) scale(1)';
+                    }, delay);
+                    revealObserver.unobserve(el);
+                }
+            });
+        }, observerOpts);
+
+        revealTargets.forEach(selector => {
+            document.querySelectorAll(selector).forEach((el, i) => {
+                // Don't override elements already being animated by GSAP hero/tab logic
+                // Also exclude pipeline cards (they're in the infinite scroll carousel) and pricing cards
+                if (el.closest('#hero') || el.closest('#infrastructure')) return;
+                if (el.closest('#infinite-deck') || el.closest('.pipeline-container')) return;
+                if (el.closest('.iridescent-card') || el.closest('.pricing-grid-v7')) return;
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(50px) scale(0.94)';
+                el.dataset.revealDelay = i * 60;
+                revealObserver.observe(el);
             });
         });
 
-        // Parallax Marquee
-        gsap.to('.marquee-content', {
-            scrollTrigger: {
-                trigger: '.marquee-transition',
-                start: "top bottom",
-                end: "bottom top",
-                scrub: true
-            },
-            x: -200,
-            ease: "none"
+        // ── 5. PRICING CARD AUTO-SPARKLE (Periodic Burst) ──
+        const pricingCards = document.querySelectorAll('.iridescent-card');
+        pricingCards.forEach((card, idx) => {
+            if (!card.dataset.sparkleEnabled) {
+                card.dataset.sparkleEnabled = '1';
+                const burst = () => {
+                    if (!card.matches(':hover')) return;
+                    const rect = card.getBoundingClientRect();
+                    for (let i = 0; i < 6; i++) {
+                        const g = document.createElement('div');
+                        g.className = 'glitter';
+                        const color = GLITTER_COLORS[Math.floor(Math.random() * GLITTER_COLORS.length)];
+                        const x = rect.left + Math.random() * rect.width;
+                        const y = rect.top  + Math.random() * rect.height;
+                        const dx = (Math.random() - 0.5) * 60;
+                        const dy = (Math.random() - 0.5) * 60;
+                        const dur = 0.4 + Math.random() * 0.4;
+                        g.style.cssText = `left:${x}px;top:${y}px;width:4px;height:4px;background:${color};box-shadow:0 0 5px ${color};--dx:${dx}px;--dy:${dy}px;--rot:135deg;--dur:${dur}s;`;
+                        document.body.appendChild(g);
+                        setTimeout(() => g.remove(), dur * 1000 + 50);
+                    }
+                };
+                card.addEventListener('mouseenter', () => {
+                    card._sparkInterval = setInterval(burst, 300);
+                });
+                card.addEventListener('mouseleave', () => {
+                    clearInterval(card._sparkInterval);
+                });
+            }
         });
 
-        // Hero Text Separation & Blur
-        gsap.to('.line-l', {
-            scrollTrigger: {
-                trigger: '#hero',
-                start: "top top",
-                end: "bottom top",
-                scrub: 1
-            },
-            x: -150,
-            opacity: 0,
-            filter: "blur(20px)"
+        // ── 6. SPRING DELETE BUTTONS ───────────────────────
+        document.querySelectorAll('button:not(.spark):not(.glitter)').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                if (typeof gsap !== 'undefined') {
+                    gsap.to(btn, { scale: 0.93, duration: 0.08, ease: 'power2.in' });
+                }
+            });
+            btn.addEventListener('mouseup', () => {
+                if (typeof gsap !== 'undefined') {
+                    gsap.to(btn, { scale: 1, duration: 0.4, ease: 'elastic.out(1.5, 0.4)' });
+                }
+            });
         });
-        gsap.to('.line-r', {
-            scrollTrigger: {
-                trigger: '#hero',
-                start: "top top",
-                end: "bottom top",
-                scrub: 1
-            },
-            x: 150,
-            opacity: 0,
-            filter: "blur(20px)"
+
+        // ── 7. HEADER LOGO JIGGLE ──────────────────────────
+        const logo = document.querySelector('.logo-v6');
+        if (logo) {
+            logo.style.cursor = 'pointer';
+            logo.style.display = 'inline-block';
+            logo.addEventListener('mouseenter', () => {
+                if (typeof gsap !== 'undefined') {
+                    gsap.fromTo(logo, 
+                        { rotation: -3 },
+                        { rotation: 3, yoyo: true, repeat: 5, duration: 0.08, ease: 'none', clearProps: 'rotation' }
+                    );
+                }
+            });
+        }
+
+        // ── 8. MARQUEE SPARKLE ON HOVER ────────────────────
+        document.querySelector('.marquee-section')?.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.85) {
+                const g = document.createElement('div');
+                g.className = 'glitter';
+                const color = GLITTER_COLORS[Math.floor(Math.random() * GLITTER_COLORS.length)];
+                const dx = (Math.random() - 0.5) * 40;
+                const dy = -(20 + Math.random() * 40);
+                g.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;width:5px;height:5px;background:${color};box-shadow:0 0 6px ${color};--dx:${dx}px;--dy:${dy}px;--rot:90deg;--dur:0.6s;`;
+                document.body.appendChild(g);
+                setTimeout(() => g.remove(), 700);
+            }
         });
-    });
-</script>
+
+    })();
+    </script>
+
 </body>
+
 </html>

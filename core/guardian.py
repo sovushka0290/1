@@ -10,8 +10,8 @@ from collections import defaultdict
 # { ip: [timestamp1, timestamp2, ...] }
 _request_history = defaultdict(list)
 
-# Configuration (Engine Standards)
-LIMIT_REQUESTS = 3
+# Configuration (Demo Mode: High Capacity)
+LIMIT_REQUESTS = 100
 LIMIT_WINDOW_SECONDS = 60
 
 async def rate_limit_check(request: Request):

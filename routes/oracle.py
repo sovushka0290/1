@@ -78,15 +78,14 @@ async def async_consensus_routine(nomad_pubkey, deed_id, mission_id, points, age
         database.update_deed_status(integrity_hash, "FAILED", "failed")
 
 @router.post("/verify", tags=["Oracle"])
-async def ritual_verify(
+async def verify_integrity_claim(
     background_tasks: BackgroundTasks,
     request: Request,
     description: str = Form(...),
     telegram_id: str = Form("UnknownNomad"),
     mission_id: str = Form(None),
     campaign_id: int = Form(None),
-    api_key: str = Form("PQ_DEV_TEST_2026"),
-    _guard: bool = Depends(guardian.rate_limit_check)
+    api_key: str = Form("PQ_DEV_TEST_2026")
 ):
     if api_key not in PROTOCOL_API_WHITELIST:
         raise HTTPException(status_code=401, detail="Unauthorized Protocol Access.")

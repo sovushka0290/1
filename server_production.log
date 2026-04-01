@@ -1,0 +1,24 @@
+/home/aqtobe-hub/ProtoQol/api/core/ai_engine.py:3: FutureWarning: 
+
+All support for the `google.generativeai` package has ended. It will no longer be receiving 
+updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
+See README for more details:
+
+https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
+
+  import google.generativeai as genai
+INFO:     Started server process [24938]
+INFO:     Waiting for application startup.
+[2026-03-31 16:42:13][PROTOCOL_ENGINE] 🚀 Booting ProtoQol Decentralized Integrity Engine v3.8.5...
+[2026-03-31 16:42:13][PROTOCOL_ENGINE] [DB_GATEWAY] SQLite MVP Database Initialized ✓
+[2026-03-31 16:42:13][PROTOCOL_ENGINE] 📦 Persistence Layer Online. WAL_MODE=True
+[2026-03-31 16:42:14][httpx] HTTP Request: POST https://api.devnet.solana.com "HTTP/1.1 200 OK"
+[2026-03-31 16:42:14][PROTOCOL_ENGINE] [SOLANA_CLIENT] Master Wallet Balance: 0.0 SOL
+[2026-03-31 16:42:14][PROTOCOL_ENGINE] [SOLANA_CLIENT] CRITICAL: Low balance on Master Authority wallet.
+[2026-03-31 16:42:14][PROTOCOL_ENGINE] [ORACLE_INIT] AUDITOR Node Loaded: dwQthrCzNyQoL1YonsaoP4W8ninv14vXa4w6vCyycqR
+[2026-03-31 16:42:14][PROTOCOL_ENGINE] [ORACLE_INIT] SKEPTIC Node Loaded: 2Z4LT56PT7KMvump6xsmjS45N6CGrEi6Ja2e23gf48ew
+[2026-03-31 16:42:14][PROTOCOL_ENGINE] [ORACLE_INIT] COMPLIANCE Node Loaded: 72e9gHFWJvbzk6iFTxLJYw1bmUymX1Vuu5ZPhijAfruU
+[2026-03-31 16:42:14][PROTOCOL_ENGINE] [BLOCKCHAIN_ADAPTER] ✓ ProtoQol Decentralized Protocol Interface Ready.
+[2026-03-31 16:42:14][PROTOCOL_ENGINE] ✅ ProtoQol Decentralized Integrity Engine Core Services are Fully Operational.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
