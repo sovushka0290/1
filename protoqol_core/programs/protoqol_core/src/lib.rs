@@ -4,7 +4,7 @@ use anchor_lang::solana_program::system_instruction;
 declare_id!("EdrjHLN9K9eogJ5Pui8WYJRAghdN4knAdAoDcZesAirc");
 
 // Foundation Master authority for protocol config
-const PROTOCOL_ADMIN: &str = "98EJYhcrJHWYsdRvTg5Tg2zi47midrFHBhdsrdnoLezh";
+const PROTOCOL_ADMIN: &str = "AHmJo4a5HHnvwkYeUVCZDHqavPuiDbzrnEQPHq7j8EkA";
 
 #[program]
 pub mod protoqol_core {
@@ -29,12 +29,14 @@ pub mod protoqol_core {
         ctx: Context<ProposeDeed>,
         deed_id: String,
         mission_id: String,
-        reward_amount: u64
+        evidence_hash: String,
+        reward_amount: u64,
     ) -> Result<()> {
         let deed = &mut ctx.accounts.deed;
         deed.nomad = ctx.accounts.nomad.key();
         deed.proposer = ctx.accounts.proposer.key();
         deed.mission_id = mission_id;
+        deed.evidence_hash = evidence_hash;
         deed.reward_amount = reward_amount;
         deed.votes_adal = 0;
         deed.votes_aram = 0;
@@ -170,6 +172,8 @@ pub struct DeedRecord {
     #[max_len(32)]
     pub mission_id: String,
     pub reward_amount: u64,
+    #[max_len(64)]
+    pub evidence_hash: String,
     pub votes_adal: u8,
     pub votes_aram: u8,
     pub resolved: bool,

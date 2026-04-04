@@ -110,9 +110,18 @@ def run_biy_council(deed_data: dict):
         verbose=True
     )
 
+    social_biy = Agent(
+        role='Social Biy (Impact Specialist)',
+        goal='Evaluate the "Spirit of Asar", sincerity of feedback, and calculate the Aura (bonus reputation).',
+        backstory='You are the guardian of the Digital Steppe\'s ethics. You look beyond raw data to find the heart of the action. You evaluate if the help was sincere, if the "Duh Asar" is present, and you award Aura bonuses based on the human impact.',
+        allow_delegation=False,
+        llm=llm,
+        verbose=True
+    )
+
     master_biy = Agent(
         role='Master Biy (Final Judge)',
-        goal='Review the Auditor\'s facts and the Skeptic\'s doubts. Form a final verdict based on Digital Steppe Law.',
+        goal='Review the Auditor\'s facts, the Skeptic\'s doubts, and the Social Biy\'s impact assessment. Form a final verdict based on Digital Steppe Law.',
         backstory='You are the embodiment of ancestral wisdom and modern compliance. You synthesize the council\'s opinions into a final, immutable verdict. Your word is law.',
         allow_delegation=True,
         llm=llm,
@@ -131,12 +140,14 @@ def run_biy_council(deed_data: dict):
 
         Step 1: Auditor must list the facts and confirm Lexical matches.
         Step 2: Skeptic must analyze any mismatch between the Base Integrity and report claims.
-        Step 3: Master Biy must synthesize everything for a final Digital Steppe Law verdict.
+        Step 3: Social Biy must evaluate the "Spirit of Asar", sincerity of the deed, and calculate the "Aura" (impact points).
+        Step 4: Master Biy must synthesize everything for a final Digital Steppe Law verdict.
         """,
         expected_output="""
         A strictly formatted JSON object:
         {
             "status": "ADAL" or "ARAM",
+            "aura_score": 0-100,
             "confidence_score": 0-100,
             "biy_wisdom": "A single sentence Kazakh-inspired wisdom summarizing the result"
         }
@@ -147,7 +158,7 @@ def run_biy_council(deed_data: dict):
     # 4. THE CREW
     
     council = Crew(
-        agents=[auditor, skeptic, master_biy],
+        agents=[auditor, skeptic, social_biy, master_biy],
         tasks=[processing_task],
         process=Process.sequential, # Step-by-step consensus
         verbose=True

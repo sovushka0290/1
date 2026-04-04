@@ -1,7 +1,7 @@
 import time
 import httpx
 from fastapi import APIRouter
-from core.config import PROTOCOL_AI_KEYS, RPC_URL, log, VERSION, ENGINE_NAME
+from core.config import ai_keys, RPC_URL, log, VERSION, ENGINE_NAME
 from core import database, state
 
 router = APIRouter(prefix="/api/v1", tags=["System_Engine"])
@@ -34,7 +34,7 @@ async def health_check():
         solana_status = "TIMEOUT"
 
     # 3. AI Consensus Engine Pool Check
-    pool_size = len(PROTOCOL_AI_KEYS)
+    pool_size = ai_keys.get_pool_size()
     ai_status = f"{pool_size}/{pool_size} ONLINE" if pool_size > 0 else "OFFLINE"
 
     # 4. Engine Uptime Calculation

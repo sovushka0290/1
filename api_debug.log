@@ -1,3 +1,0 @@
-nohup: ввод игнорируется
-INFO:     Will watch for changes in these directories: ['/home/aqtobe-hub/ProtoQol/api']
-ERROR:    [Errno 98] Address already in use

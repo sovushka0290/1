@@ -159,12 +159,13 @@ button, .btn { font-family: var(--font-main); cursor: pointer; border: none; out
 }
 .header-inner-v6 { display: flex; justify-content: space-between; align-items: center; }
 .logo-v6 { 
-    font-family: 'Outfit', sans-serif;
     font-weight: 900; 
-    font-size: 1.8rem; 
-    letter-spacing: -1.5px; 
-    color: #00a2ff;
-    cursor: pointer;
+    font-size: 1.4rem; 
+    letter-spacing: -1px; 
+    background: linear-gradient(135deg, #00C6FF, #0072FF); 
+    -webkit-background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    background-clip: text;
 }
 
 .nav-links-v6 { display: flex; gap: 2.5rem; list-style: none; }
@@ -1058,7 +1059,7 @@ body.dark-mode .form-label { color: #9CA3AF; }
             z-index: 2000; display: flex; align-items: center;
             box-shadow: 0 4px 30px rgba(0,0,0,0.02);
         }
-        .logo-v6 { font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 900; color: #00a2ff; letter-spacing: -1.5px; cursor: pointer; }
+        .logo-v6 { font-size: 1.4rem; font-weight: 1000; color: #000; letter-spacing: -1px; text-transform: uppercase; cursor: pointer; }
         .nav-links-v6 { list-style: none; display: flex; gap: 40px; align-items: center; }
         .nav-links-v6 li a { text-decoration: none; color: rgba(0,0,0,0.6); font-size: 0.95rem; font-weight: 700; transition: 0.3s; }
         .nav-links-v6 li a:hover { color: #000; }

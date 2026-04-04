@@ -32,20 +32,92 @@ async def check_biy_balance():
 async def init_anchor_program():
     global ANCHOR_PROGRAM, ORACLE_KEYS
     try:
-        if not os.path.exists(IDL_PATH):
-            log.warning(f"[ANCHOR_NODE] IDL not found at {IDL_PATH}")
-            return
+        # VIRTUAL IDL (Legacy Schema for AnchorPy Compatibility)
+        v_idl = {
+            "name": "protoqol_core",
+            "version": "0.1.0",
+            "instructions": [
+                {
+                    "name": "initialize_protocol",
+                    "accounts": [
+                        {"name": "stats", "isMut": True, "isSigner": False},
+                        {"name": "admin", "isMut": True, "isSigner": True},
+                        {"name": "system_program", "isMut": False, "isSigner": False}
+                    ],
+                    "args": []
+                },
+                {
+                    "name": "add_oracle",
+                    "accounts": [
+                        {"name": "oracle_registry", "isMut": True, "isSigner": False},
+                        {"name": "admin", "isMut": True, "isSigner": True},
+                        {"name": "system_program", "isMut": False, "isSigner": False}
+                    ],
+                    "args": [{"name": "oracle_pubkey", "type": "publicKey"}]
 
-        with open(IDL_PATH, "r") as f:
-            idl_json = f.read()
-        idl = Idl.from_json(idl_json)
-        client = AsyncClient(RPC_URL, commitment=Confirmed)
+                },
+                {
+                    "name": "propose_deed",
+                    "accounts": [
+                        {"name": "deed", "isMut": True, "isSigner": False},
+                        {"name": "nomad", "isMut": False, "isSigner": False},
+                        {"name": "proposer", "isMut": True, "isSigner": True},
+                        {"name": "system_program", "isMut": False, "isSigner": False}
+                    ],
+                    "args": [
+                        {"name": "deed_id", "type": "string"},
+                        {"name": "mission_id", "type": "string"},
+                        {"name": "evidence_hash", "type": "string"},
+                        {"name": "reward_amount", "type": "u64"}
+                    ]
+
+                },
+
+                {
+                    "name": "vote_deed",
+                    "accounts": [
+                        {"name": "deed", "isMut": True, "isSigner": False},
+                        {"name": "nomad", "isMut": True, "isSigner": False},
+                        {"name": "proposer", "isMut": True, "isSigner": False},
+                        {"name": "oracle", "isMut": True, "isSigner": True},
+                        {"name": "oracle_registry", "isMut": False, "isSigner": False},
+                        {"name": "system_program", "isMut": False, "isSigner": False}
+                    ],
+                    "args": [
+                        {"name": "deed_id", "type": "string"},
+                        {"name": "verdict_adal", "type": "bool"}
+                    ]
+                }
+            ],
+            "accounts": [
+                {"name": "DeedRecord", "type": {"kind": "struct", "fields": [
+                    {"name": "nomad", "type": "publicKey"}, 
+                    {"name": "proposer", "type": "publicKey"},
+                    {"name": "mission_id", "type": "string"},
+                    {"name": "reward_amount", "type": "u64"},
+                    {"name": "evidence_hash", "type": "string"},
+                    {"name": "votes_adal", "type": "u8"},
+                    {"name": "votes_aram", "type": "u8"},
+                    {"name": "resolved", "type": "bool"},
+                    {"name": "timestamp", "type": "i64"}
+                ]}}
+            ]
+
+        }
+        
+        idl = Idl.from_json(json.dumps(v_idl))
+        print("      [SOLANA_CLIENT] Virtual IDL Loaded Successfully.")
+        
+        client = AsyncClient(RPC_URL, commitment=Confirmed, timeout=30.0)
         wallet = Wallet(MASTER_AUTHORITY_KEY)
         provider = Provider(client, wallet)
         ANCHOR_PROGRAM = Program(idl, PROTOCOL_PROGRAM_ID, provider)
+        print("      ✓ [SOLANA_CLIENT] Anchor V4 ready with Virtual IDL.")
+
+
         
         # Initialize Biy Oracles (Deterministic for Demo)
-        agents = ["AUDITOR", "SKEPTIC", "COMPLIANCE"]
+        agents = ["AUDITOR", "SKEPTIC", "SOCIAL_BIY"]
         for agent in agents:
             seed = hashlib.sha256(f"BIY_{agent}_{NOMAD_WALLET_SALT}".encode()).digest()
             ORACLE_KEYS[agent] = Keypair.from_seed(seed)
@@ -55,7 +127,7 @@ async def init_anchor_program():
     except Exception as e:
         log.warning(f"[ANCHOR_NODE] Protocol initialization failure: {e}")
 
-async def propose_deed_on_chain(deed_id, nomad_pubkey, proposer_kp, mission_id, reward_amount):
+async def propose_deed_on_chain(deed_id, nomad_pubkey, proposer_kp, mission_id, evidence_hash, reward_amount):
     """
     Initializes a deed on-chain and escrows the reward.
     """
@@ -64,15 +136,22 @@ async def propose_deed_on_chain(deed_id, nomad_pubkey, proposer_kp, mission_id, 
         return f"SIM_PROPOSE_{uuid.uuid4().hex[:8]}"
 
     global ANCHOR_PROGRAM
+    if not ANCHOR_PROGRAM and not SIMULATION_MODE:
+        await init_anchor_program() # Lazy init for production stability
+
 
     deed_pda, _ = Pubkey.find_program_address(
+
         [b"deed", deed_id.encode("utf-8")],
         PROTOCOL_PROGRAM_ID
     )
 
     try:
-        tx = await ANCHOR_PROGRAM.rpc["proposeDeed"](
-            deed_id, mission_id, reward_amount,
+        tx = await ANCHOR_PROGRAM.rpc["propose_deed"](
+            str(deed_id), 
+            str(mission_id), 
+            str(evidence_hash), 
+            int(reward_amount),
             ctx=Context(
                 accounts={
                     "deed": deed_pda,
@@ -83,11 +162,17 @@ async def propose_deed_on_chain(deed_id, nomad_pubkey, proposer_kp, mission_id, 
                 signers=[proposer_kp]
             )
         )
+
+
         log.info(f"[ANCHOR_TX] Deed Proposed: {deed_id} -> {tx}")
         return str(tx)
     except Exception as e:
         log.error(f"[ANCHOR_TX] Propose failed for {deed_id}: {e}")
+        # Print actual RPC error if available
+        if hasattr(e, 'error_msg'):
+            log.error(f"RPC ERROR MSG: {e.error_msg}")
         raise e
+
 
 async def vote_deed_on_chain(deed_id, oracle_agent_name, verdict_adal, nomad_pubkey, proposer_pubkey):
     """
@@ -114,8 +199,9 @@ async def vote_deed_on_chain(deed_id, oracle_agent_name, verdict_adal, nomad_pub
     )
 
     try:
-        tx = await ANCHOR_PROGRAM.rpc["voteDeed"](
+        tx = await ANCHOR_PROGRAM.rpc["vote_deed"](
             deed_id, verdict_adal,
+
             ctx=Context(
                 accounts={
                     "deed": deed_pda,
