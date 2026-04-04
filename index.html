@@ -1567,23 +1567,94 @@
                 </div>
             </div>
 
-            <div class="contact-form-container" style="background: rgba(255,255,255,0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.5); padding: 3rem; border-radius: 40px; box-shadow: 0 40px 100px rgba(0,0,0,0.05);">
+            <div class="contact-form-container" id="contact-form-window" style="background: rgba(255,255,255,0.4); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border: 1px solid rgba(255,255,255,0.5); padding: 3rem; border-radius: 40px; box-shadow: 0 40px 100px rgba(0,0,0,0.05); min-height: 520px; display: flex; flex-direction: column; justify-content: center;">
                 <form id="inquiry-form" style="display: flex; flex-direction: column; gap: 1.5rem;">
                     <div class="form-group">
                         <label style="display: block; font-size: 0.7rem; font-weight: 800; color: #111; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px;">Ваше имя</label>
-                        <input type="text" placeholder="Как к вам обращаться?" style="width: 100%; padding: 1.2rem; border-radius: 16px; border: 1px solid rgba(0,0,0,0.05); background: rgba(255,255,255,0.5); outline: none; transition: all 0.3s ease;" />
+                        <input type="text" id="contact-name" name="name" required placeholder="Как к вам обращаться?" style="width: 100%; padding: 1.2rem; border-radius: 16px; border: 1px solid rgba(0,0,0,0.05); background: rgba(255,255,255,0.5); outline: none; transition: all 0.3s ease; font-family: inherit; font-weight: 600;" onfocus="this.style.borderColor='#3b82f6'; this.style.background='#fff'" onblur="this.style.borderColor='rgba(0,0,0,0.05)'; this.style.background='rgba(255,255,255,0.5)'" />
                     </div>
                     <div class="form-group">
                         <label style="display: block; font-size: 0.7rem; font-weight: 800; color: #111; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px;">Электронная почта</label>
-                        <input type="email" placeholder="example@mail.com" style="width: 100%; padding: 1.2rem; border-radius: 16px; border: 1px solid rgba(0,0,0,0.05); background: rgba(255,255,255,0.5); outline: none;" />
+                        <input type="email" id="contact-email" name="email" required placeholder="example@mail.com" style="width: 100%; padding: 1.2rem; border-radius: 16px; border: 1px solid rgba(0,0,0,0.05); background: rgba(255,255,255,0.5); outline: none; transition: all 0.3s ease; font-family: inherit; font-weight: 600;" onfocus="this.style.borderColor='#3b82f6'; this.style.background='#fff'" onblur="this.style.borderColor='rgba(0,0,0,0.05)'; this.style.background='rgba(255,255,255,0.5)'" />
                     </div>
                     <div class="form-group">
                         <label style="display: block; font-size: 0.7rem; font-weight: 800; color: #111; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px;">Ваше обращение</label>
-                        <textarea placeholder="Опишите ваши задачи или вопросы..." style="width: 100%; padding: 1.2rem; border-radius: 16px; border: 1px solid rgba(0,0,0,0.05); background: rgba(255,255,255,0.5); outline: none; min-height: 150px; resize: none;"></textarea>
+                        <textarea id="contact-msg" name="message" required placeholder="Опишите ваши задачи или вопросы..." style="width: 100%; padding: 1.2rem; border-radius: 16px; border: 1px solid rgba(0,0,0,0.05); background: rgba(255,255,255,0.5); outline: none; min-height: 150px; resize: none; transition: all 0.3s ease; font-family: inherit; font-weight: 600;" onfocus="this.style.borderColor='#3b82f6'; this.style.background='#fff'" onblur="this.style.borderColor='rgba(0,0,0,0.05)'; this.style.background='rgba(255,255,255,0.5)'"></textarea>
                     </div>
-                    <button type="submit" style="background: #000; color: #fff; padding: 1.5rem; border-radius: 16px; border: none; font-weight: 800; letter-spacing: 1px; cursor: pointer; transition: all 0.3s ease;">ОТПРАВИТЬ ЗАПРОС</button>
+                    <button type="submit" id="submit-btn" style="background: #000; color: #fff; padding: 1.5rem; border-radius: 16px; border: none; font-weight: 800; letter-spacing: 1px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; box-shadow: 0 10px 30px rgba(0,0,0,0.1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 15px 40px rgba(0,0,0,0.2)'" onmouseout="this.style.transform='translateY(0px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)'">ОТПРАВИТЬ ЗАПРОС</button>
                 </form>
+
+                <!-- Cinematic Success View -->
+                <div id="contact-success" style="display: none; text-align: center; opacity: 0;">
+                    <div class="success-icon" style="font-size: 5rem; margin-bottom: 2rem;">📥</div>
+                    <h2 style="font-size: 2.2rem; font-weight: 950; color: #111; margin-bottom: 1rem; letter-spacing: -1px;">REQUEST SECURED</h2>
+                    <p style="color: #666; font-size: 1.1rem; line-height: 1.6; font-weight: 500;">
+                        Anchoring your enquiry on <span style="color: #3b82f6;">Solana Devnet...</span><br />
+                        Our Biy Councillors will reach you shortly. ⚖️
+                    </p>
+                    <div class="tx-hash" style="margin-top: 3rem; font-family: monospace; font-size: 0.7rem; color: #999; letter-spacing: 1px; background: rgba(0,0,0,0.03); padding: 10px; border-radius: 8px;">
+                        TX: PROTO_CONTACT_33e0...f82a
+                    </div>
+                </div>
             </div>
+
+            <script>
+                // Form Interactivity Engine
+                const form = document.getElementById('inquiry-form');
+                const successMsg = document.getElementById('contact-success');
+                const windowV7 = document.getElementById('contact-form-window');
+                const submitBtn = document.getElementById('submit-btn');
+
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    
+                    // Button Loading State
+                    submitBtn.innerText = "ANCHORING...";
+                    submitBtn.style.opacity = "0.7";
+                    submitBtn.style.pointerEvents = "none";
+
+                    // Start Cinematic Sequence
+                    gsap.to(form, {
+                        opacity: 0,
+                        y: -30,
+                        duration: 0.6,
+                        ease: "power4.in",
+                        onComplete: () => {
+                            form.style.display = 'none';
+                            successMsg.style.display = 'block';
+
+                            // Animate Success in
+                            gsap.to(successMsg, {
+                                opacity: 1,
+                                duration: 0.8,
+                                ease: "power2.out"
+                            });
+
+                            // Icon Float Effect
+                            gsap.to(".success-icon", {
+                                y: -15,
+                                duration: 2,
+                                repeat: -1,
+                                yoyo: true,
+                                ease: "sine.inOut"
+                            });
+
+                            // Confetti imitation (Subtle Scale Up of window)
+                            gsap.to(windowV7, {
+                                scale: 1.02,
+                                duration: 0.4,
+                                yoyo: true,
+                                repeat: 1,
+                                ease: "power2.inOut"
+                            });
+                        }
+                    });
+
+                    // Log Data for Demo
+                    const formData = new FormData(form);
+                    console.log("Inquiry Payload Captured:", Object.fromEntries(formData));
+                });
+            </script>
         </div>
     </section>
 
