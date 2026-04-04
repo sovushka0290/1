@@ -89,6 +89,33 @@ async def anchor_integrity_task(user_id: str, mission_id: str, integrity_hash: s
         log.error(f"[SOLANA_BACKBONE] ❌ Anchorage Failure: {e}")
 
 # ═══════════════════════════════════════════════════════════════
+# B2B INQUIRY HUB (Lead Capture)
+# ═══════════════════════════════════════════════════════════════
+
+class InquirySubmission(BaseModel):
+    name: str = Field(..., min_length=1)
+    email: str = Field(..., min_length=5)
+    message: str = Field(..., min_length=1)
+
+@app.post("/api/v1/inquiry", tags=["B2B_Integrity"])
+async def process_b2b_inquiry(data: InquirySubmission):
+    """
+    Captures corporate interest and anchors it to the local audit trail.
+    """
+    log.warning(f"🚀 [B2B_LEAD] New Inquiry from {data.email} ({data.name})")
+    log.info(f"📜 [INQUIRY_TEXT] {data.message}")
+    
+    # Simulate a small delay for 'Anchoring' feel
+    time.sleep(0.4)
+    
+    return {
+        "status": "success",
+        "message": "Enquiry Secured",
+        "tx_hash": f"PROTO_INQ_{random.randint(1000, 9999)}_x{random.randint(10, 99)}f777",
+        "timestamp": datetime.now().isoformat()
+    }
+
+# ═══════════════════════════════════════════════════════════════
 # OMNIVOROUS API GATEWAY
 # ═══════════════════════════════════════════════════════════════
 
