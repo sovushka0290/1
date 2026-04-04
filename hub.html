@@ -42,17 +42,23 @@
             pointer-events: none;
         }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
 
         /* HERO SECTION */
         .hero {
             height: 100vh;
+            min-height: 800px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            position: relative;
+            padding-top: 60px;
         }
 
         .hero-label {
@@ -61,11 +67,11 @@
             letter-spacing: 5px;
             color: var(--accent-blue);
             margin-bottom: 24px;
-            /* Initially hidden via JS now */
+            /* Initially hidden via JS */
         }
 
         .hero-title {
-            font-size: clamp(3rem, 10vw, 7rem);
+            font-size: clamp(2.5rem, 10vw, 7rem);
             font-weight: 900;
             letter-spacing: -4px;
             line-height: 0.85;
@@ -73,12 +79,32 @@
         }
 
         .hero-subtitle {
-            font-size: 1.3rem;
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
             color: var(--text-dim);
             max-width: 700px;
             margin-bottom: 60px;
             line-height: 1.6;
             font-weight: 300;
+        }
+
+        /* RESPONSIVE BREAKPOINTS */
+        @media (max-width: 1024px) {
+            .container { padding: 0 30px; }
+            .hero { min-height: 700px; }
+            .eco-card { width: 100% !important; max-width: 600px; }
+            .ecosystem-grid { padding-bottom: 80px; }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 20px; }
+            .hero-title { letter-spacing: -2px; }
+            .hero { height: auto; padding: 120px 20px 80px; }
+            .video-section { padding: 60px 0; }
+            .video-title-tag { font-size: 1.5rem; }
+            .ecosystem-grid { gap: 30px; }
+            .eco-card { padding: 3rem 2rem; border-radius: 30px; }
+            .eco-title { font-size: 1.8rem; }
+            .btn-premium { width: 100%; padding: 1.2rem 2rem; }
         }
 
         .btn-premium {
