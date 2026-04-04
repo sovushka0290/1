@@ -163,14 +163,15 @@ async def verify_mission(
     except Exception as e:
         log.critical(f"[CRITICAL_BACKEND] Resilience Triggered: {e}")
         # REALIABLE FALLBACK (Fail-Safe Response)
+        # We don't want to fake successes (ADAL) if the engine is truly broken.
         return {
-            "status": "success",
-            "verdict": "ADAL",
-            "impact": 0.5,
-            "aura": 10,
-            "wisdom": "Система в режиме защиты. Ваша честность подтверждена базово.",
-            "integrity_hash": "FALLBACK_SAFE_HASH",
-            "audit_trail": "Simulated Settlement"
+            "status": "warning",
+            "verdict": "REVIEW_NEEDED", # Critical change: inform user that automation is halted
+            "impact": 0.0,
+            "aura": 0,
+            "wisdom": "Система в режиме защиты. Ваша миссия требует ручного подтверждения Бием.",
+            "integrity_hash": "TIMEOUT_RECOVERY_" + hex(int(time.time()))[2:],
+            "audit_trail": "Manual Audit Triggered due to AI/RPC latency."
         }
 
 # ═════════════════════════════════════════════════════

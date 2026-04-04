@@ -116,17 +116,18 @@ def save_deed(deed_data: dict, mission_info: dict):
         ai_dialogue_json = json.dumps(deed_data.get('ai_dialogue', []), ensure_ascii=False)
         
         cursor.execute('''
-            INSERT INTO deeds (client_id, nomad_id, mission_id, verdict, impact_points, tx_hash, integrity_hash, ai_dialogue)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO deeds (client_id, nomad_id, mission_id, verdict, impact_points, tx_hash, integrity_hash, ai_dialogue, source)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             client_id, 
-            deed_data['wallet_address'], 
-            deed_data['mission_id'], 
-            deed_data['status'], 
-            deed_data['impact_points'], 
-            deed_data['tx_hash'], 
-            deed_data['integrity_hash'],
-            ai_dialogue_json
+            deed_data.get('wallet_address', deed_data.get('user_id', 'unknown')), 
+            deed_data.get('mission_id', 'unknown'), 
+            deed_data.get('verdict', 'REVIEW_NEEDED'), 
+            deed_data.get('impact_score', 0) if isinstance(deed_data.get('impact_score'), (int, float)) else 0, 
+            deed_data.get('tx_hash', 'N/A'), 
+            deed_data.get('integrity_hash', 'N/A'),
+            ai_dialogue_json,
+            deed_data.get('source', 'TMA_APP')
         ))
         conn.commit()
     except Exception as e:

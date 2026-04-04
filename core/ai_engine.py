@@ -100,40 +100,50 @@ class ResilienceEngine:
         return ResilienceEngine.get_mock_consensus()
 
     @staticmethod
-    def get_mock_consensus() -> Dict[str, Any]:
-        """Emergency Fallback to keep AI Protocol functioning."""
+    def get_mock_consensus(reason: str = "Resilience Mode") -> Dict[str, Any]:
+    #    """Emergency Fallback: Redirect to Manual Review for Hackathon Stability."""
         return {
-            "auditor_report": {"confidence": 0.9, "status": "PASS"},
-            "skeptic_report": {"fraud_probability": 0.05, "verdict": "CLEAN"},
-            "social_report": {"asar_score": 0.8, "wisdom": "Время течет, а честность остается. (Safety Mode)"},
+            "auditor_report": {"confidence": 0.0, "status": "PENDING"},
+            "skeptic_report": {"fraud_probability": 0.5, "verdict": "UNCERTAIN"},
+            "social_report": {"asar_score": 0.0, "wisdom": "Система требует внимания человека."},
             "master_consensus": {
-                "verdict": "ADAL",
-                "summary": "Protocol Resilience Mode: Basic heuristics confirmed.",
-                "ready_for_mint": True
+                "verdict": "REVIEW_NEEDED", # CRITICAL: Inform frontend that human eye is required
+                "summary": f"AI Engine Fallback: {reason}. Manual check triggered to prevent false positives.",
+                "ready_for_mint": False
             },
-            "integrity_hash": hashlib.sha256(str(time.time()).encode()).hexdigest()
+            "integrity_hash": "N/A_FALLBACK_" + hashlib.sha256(str(time.time()).encode()).hexdigest()[:12]
         }
 
 
 async def analyze_deed(description: str, mission_info: dict = {}, meta: dict = {}, photo_bytes: bytes = None):
     """
-    Final optimized entry point for Multi-Agent Consensus.
-    Collapse 4 agents -> 1 request -> High Speed.
+    Unified Biy Council entry point.
+    Optimized for Gemini 2.0 Flash (Latency < 2.5s).
     """
-    log.info(f"[BIY_COUNCIL] 🧠 Initiating Quorum for: {description[:30]}...")
-    
-    prompt = UNIFIED_BIY_PROMPT.format(
-        description=description,
-        context=mission_info.get("requirements", "General Mutual Aid"),
-        meta=json.dumps(meta, ensure_ascii=False)
-    )
-    
-    t0 = time.time()
-    consensus = await ResilienceEngine.query_gemini_unified(prompt, photo_bytes)
-    latency = time.time() - t0
-    
-    # Final data polishing
-    consensus["latency"] = latency
-    consensus["timestamp"] = datetime.now().isoformat()
-    return consensus
+    try:
+        log.info(f"[BIY_COUNCIL] 🧠 Initiating Quorum for: {description[:30]}...")
+        
+        prompt = UNIFIED_BIY_PROMPT.format(
+            description=description,
+            context=mission_info.get("requirements", "General Mutual Aid"),
+            meta=json.dumps(meta, ensure_ascii=False)
+        )
+        
+        t0 = time.time()
+        consensus = await ResilienceEngine.query_gemini_unified(prompt, photo_bytes)
+        latency = time.time() - t0
+        
+        # Final data polishing
+        consensus["latency"] = latency
+        consensus["timestamp"] = datetime.now().isoformat()
+        
+        # Double check core field
+        if "master_consensus" not in consensus:
+            return ResilienceEngine.get_mock_consensus("Invalid JSON Structure from AI")
+            
+        return consensus
+
+    except Exception as e:
+        log.error(f"[AI_ENGINE_FATAL] {traceback.format_exc() if 'traceback' in locals() else e}")
+        return ResilienceEngine.get_mock_consensus(str(e))
 
