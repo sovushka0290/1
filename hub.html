@@ -1,559 +1,332 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProtoQol Hub</title>
     <link rel="icon" type="image/png" href="hub_favicon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800;900&display=swap" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Outfit:wght@300;500;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- GSAP for robust animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    
     <style>
+        /* Modern reset and CSS variables */
         :root {
-            --bg: #050505;
-            --glass: rgba(255, 255, 255, 0.03);
+            --bg: #030407;
+            --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
-            --accent-blue: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.3);
+            --accent-1: #00FFA3; /* Cyber Green */
+            --accent-2: #B371FF; /* Neon Purple */
+            --accent-3: #00C6FF; /* Cyber Blue */
             --text-main: #FFFFFF;
-            --text-dim: rgba(255, 255, 255, 0.6);
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-sans: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body { 
-            background: var(--bg); 
-            color: var(--text-main); 
-            font-family: 'Outfit', sans-serif; 
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: var(--font-body);
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(179, 113, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(0, 198, 255, 0.08) 0%, transparent 50%);
         }
+        
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
 
-        /* Ambient Background Background */
-        .ambient-glow {
-            position: fixed;
-            width: 100vw;
-            height: 100vh;
-            background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.04) 0%, transparent 70%);
-            z-index: -1;
-            pointer-events: none;
+        /* Navigation */
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 2rem 0;
+            font-family: var(--font-display);
         }
-
-        .container {
-            width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 40px;
-        }
-
-        /* HERO SECTION */
+        .logo { font-size: 1.5rem; font-weight: 800; letter-spacing: 2px; }
+        .logo span { color: var(--accent-2); }
+        
+        /* Hero Section */
         .hero {
-            height: 100vh;
-            min-height: 800px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding-top: 60px;
+            min-height: 80vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            position: relative;
         }
-
         .hero-label {
-            font-size: 0.75rem;
-            font-weight: 800;
-            letter-spacing: 5px;
-            color: var(--accent-blue);
-            margin-bottom: 24px;
-            /* Initially hidden via JS */
+            font-family: var(--font-display); font-size: 0.85rem; font-weight: 700;
+            letter-spacing: 4px; color: var(--accent-1); text-transform: uppercase;
+            margin-bottom: 2rem; border: 1px solid rgba(0, 255, 163, 0.3);
+            padding: 8px 16px; border-radius: 50px; background: rgba(0, 255, 163, 0.05);
         }
-
         .hero-title {
-            font-size: clamp(2.5rem, 10vw, 7rem);
-            font-weight: 900;
-            letter-spacing: -4px;
-            line-height: 0.85;
-            margin-bottom: 40px;
+            font-family: var(--font-display); font-size: clamp(3rem, 8vw, 6.5rem);
+            font-weight: 800; line-height: 1; margin-bottom: 1.5rem;
+            letter-spacing: -2px;
         }
-
+        .hero-title .gradient-text {
+            background: linear-gradient(to right, #00C6FF, #B371FF);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
         .hero-subtitle {
-            font-size: clamp(1rem, 2.5vw, 1.3rem);
-            color: var(--text-dim);
-            max-width: 700px;
-            margin-bottom: 60px;
-            line-height: 1.6;
-            font-weight: 300;
+            font-family: var(--font-sans); font-size: clamp(1.1rem, 2vw, 1.4rem);
+            color: var(--text-muted); max-width: 800px; line-height: 1.6;
+            margin-bottom: 3.5rem; font-weight: 300;
+        }
+        
+        /* Buttons */
+        .btn-group { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .btn {
+            font-family: var(--font-display); padding: 1.2rem 2.5rem; border-radius: 50px;
+            font-weight: 700; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase;
+            text-decoration: none; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-flex; align-items: center; justify-content: center;
+            cursor: pointer; border: none; outline: none;
+        }
+        .btn-primary {
+            background: #fff; color: #000;
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
+        }
+        .btn-primary:hover {
+            transform: translateY(-5px); box-shadow: 0 10px 40px rgba(255, 255, 255, 0.4);
+        }
+        .btn-secondary {
+            background: var(--glass-bg); color: #fff;
+            border: 1px solid var(--glass-border); backdrop-filter: blur(10px);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
         }
 
-        /* RESPONSIVE BREAKPOINTS */
-        @media (max-width: 1024px) {
-            .container { padding: 0 30px; }
-            .hero { min-height: 700px; }
-            .eco-card { width: 100% !important; max-width: 600px; }
-            .ecosystem-grid { padding-bottom: 80px; }
+        /* Video Section */
+        .video-showcase {
+            position: relative; width: 100%; max-width: 1000px; margin: 4rem auto 8rem;
+            aspect-ratio: 16/9; border-radius: 32px; overflow: hidden;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border); cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+            transform-style: preserve-3d; perspective: 1000px;
+        }
+        .video-showcase::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(179, 113, 255, 0.2), rgba(0, 198, 255, 0.2));
+            opacity: 0; transition: 0.5s; z-index: 1; pointer-events: none;
+        }
+        .video-showcase:hover::after { opacity: 1; }
+        .play-button {
+            width: 100px; height: 100px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex; justify-content: center; align-items: center;
+            backdrop-filter: blur(10px); z-index: 5; font-size: 2rem; color: #fff;
+            transition: 0.4s;
+        }
+        .video-showcase:hover .play-button {
+            transform: scale(1.1); background: #fff; color: #000;
+            box-shadow: 0 0 40px rgba(255,255,255,0.4);
+        }
+        .video-tag {
+            position: absolute; top: 30px; left: 30px; z-index: 5;
+            font-family: var(--font-display); font-size: 0.8rem; font-weight: 700;
+            letter-spacing: 2px; color: var(--accent-1); pointer-events: none;
         }
 
-        @media (max-width: 768px) {
-            .container { padding: 0 20px; }
-            .hero-title { letter-spacing: -2px; }
-            .hero { height: auto; padding: 120px 20px 80px; }
-            .video-section { padding: 60px 0; }
-            .video-title-tag { font-size: 1.5rem; }
-            .ecosystem-grid { gap: 30px; }
-            .eco-card { padding: 3rem 2rem; border-radius: 30px; }
-            .eco-title { font-size: 1.8rem; }
-            .btn-premium { width: 100%; padding: 1.2rem 2rem; }
-        }
-
-        .btn-premium {
-            padding: 1.4rem 3.5rem;
-            border-radius: 60px;
-            background: #fff;
-            color: #000;
-            text-decoration: none;
-            font-weight: 900;
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-            position: relative;
-            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-premium:hover {
-            transform: scale(1.05) translateY(-5px);
-            box-shadow: 0 20px 40px rgba(255,255,255,0.15);
-        }
-
-        /* VIDEO SHOWCASE */
-        .video-section { padding: 120px 0; }/* Visibility handled by JS now */
-        .video-wrapper {
-            width: 100%;
-            aspect-ratio: 16/9;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--glass-border);
-            border-radius: 40px;
-            backdrop-filter: blur(40px);
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
-        }
-        .video-label-tag {
-            position: absolute;
-            top: 40px;
-            left: 40px;
-            font-size: 0.7rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            color: var(--text-dim);
-            z-index: 5;
-        }
-        .video-title-tag {
-            position: absolute;
-            bottom: 40px;
-            left: 40px;
-            font-size: 1.5rem;
-            font-weight: 800;
-            z-index: 5;
-        }
-
-        /* ECOSYSTEM SPLIT */
+        /* Ecosystem Grid - V8 Iridescent Style */
         .ecosystem-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2.5rem;
-            padding: 120px 0;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
+            padding: 4rem 0 10rem;
         }
-
         .eco-card {
-            padding: 5rem 4rem;
-            border-radius: 50px;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(60px);
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-            text-decoration: none;
-            color: #fff;
+            position: relative; padding: 4.5rem 3.5rem; border-radius: 40px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+            display: flex; flex-direction: column; text-decoration: none; color: #fff;
+            overflow: hidden; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-style: preserve-3d; cursor: pointer; min-height: 480px;
         }
-
         .eco-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.1), transparent 50%);
-            opacity: 0; transition: 0.6s;
+            content: ''; position: absolute; inset: 0; z-index: -1;
+            background: radial-gradient(circle at top right, var(--hover-color), transparent 60%);
+            opacity: 0; transition: 0.8s; pointer-events: none;
         }
-
         .eco-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            border-color: rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.06);
+            transform: translateY(-20px) scale(1.02) rotateX(8deg) rotateY(4deg);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.6), 0 0 40px var(--hover-color-glow);
         }
-
-        .eco-card:hover::before { opacity: 1; }
-
-        .eco-icon { font-size: 4rem; margin-bottom: 2.5rem; }
-        .eco-title { font-size: 2.8rem; font-weight: 800; letter-spacing: -2px; line-height: 1; }
-        .eco-text { font-size: 1.15rem; color: var(--text-dim); line-height: 1.7; font-weight: 300; }
-
-        .eco-cta {
-            margin-top: 3rem;
-            font-size: 0.8rem;
-            font-weight: 950;
-            letter-spacing: 3px;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: 0.3s;
+        .eco-card:hover::before { opacity: 0.15; }
+        
+        .eco-icon {
+            font-size: 3.5rem; margin-bottom: 2.5rem; filter: drop-shadow(0 0 20px var(--hover-color-glow));
         }
-        .eco-cta span { width: 40px; height: 1px; background: #fff; transition: 0.3s; }
-        .eco-card:hover .eco-cta span { width: 60px; background: var(--accent-blue); }
+        .eco-title {
+            font-family: var(--font-display); font-size: 2.8rem; font-weight: 800;
+            margin-bottom: 1.5rem; line-height: 1.1; letter-spacing: -1px;
+        }
+        .eco-desc {
+            font-family: var(--font-body); font-size: 1.15rem; color: var(--text-muted);
+            line-height: 1.6; margin-bottom: 3rem; flex-grow: 1;
+        }
+        .eco-action {
+            font-family: var(--font-display); font-size: 0.85rem; font-weight: 800;
+            letter-spacing: 2px; text-transform: uppercase; color: #fff;
+            display: flex; align-items: center; gap: 15px;
+        }
+        .eco-action span {
+            width: 40px; height: 1px; background: rgba(255, 255, 255, 0.3); transition: 0.4s;
+        }
+        .eco-card:hover .eco-action span {
+            width: 80px; background: #fff;
+        }
+        
+        #card-qaiyrym { --hover-color: #B371FF; --hover-color-glow: rgba(179, 113, 255, 0.4); }
+        #card-protoqol { --hover-color: #00C6FF; --hover-color-glow: rgba(0, 198, 255, 0.4); border-color: rgba(0, 198, 255, 0.15); }
 
-        /* FOOTER */
+        /* Modal */
+        .modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px);
+            z-index: 9999; display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: 0.4s;
+        }
+        .modal.active { display: flex; opacity: 1; }
+        .modal-content {
+            width: 90%; max-width: 1200px; aspect-ratio: 16/9;
+            background: #000; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
+            position: relative; transform: scale(0.9); transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal.active .modal-content { transform: scale(1); }
+        .modal-close {
+            position: absolute; top: -50px; right: 0; color: #fff; font-size: 2rem;
+            cursor: pointer; background: none; border: none; opacity: 0.6; transition: 0.3s;
+        }
+        .modal-close:hover { opacity: 1; transform: rotate(90deg); }
+        iframe { width: 100%; height: 100%; border-radius: 20px; }
+
+        /* Footer */
         footer {
-            padding: 80px 0;
-            text-align: center;
-            border-top: 1px solid var(--glass-border);
-            font-size: 0.75rem;
-            letter-spacing: 3px;
-            color: rgba(255,255,255,0.2);
-            text-transform: uppercase;
-            font-weight: 900;
+            padding: 4rem 0; text-align: center; border-top: 1px solid var(--glass-border);
+            font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 2px;
+            color: var(--text-muted); text-transform: uppercase; font-weight: 600;
         }
 
-        /* Responsive */
-        @media (max-width: 900px) {
+        @media (max-width: 1024px) {
             .ecosystem-grid { grid-template-columns: 1fr; }
-            .hero-title { font-size: 4rem; }
-            .container { padding: 0 25px; }
-            .eco-card { padding: 3rem 2rem; }
+            .eco-card { min-height: auto; }
+        }
+        @media (max-width: 768px) {
+            .hero-title { font-size: 3rem; }
+            .container { padding: 0 20px; }
+            .btn-group { flex-direction: column; width: 100%; }
+            .btn { width: 100%; }
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <nav class="navbar">
+            <div class="logo">PROTOQOL <span>x</span> QAIYRYM</div>
+        </nav>
 
-    <div class="ambient-glow"></div>
-
-    <section class="hero container">
-        <span class="hero-label">THE TRUST PROTOCOL</span>
-        <h1 class="hero-title">ProtoQol <br/> <span style="color: var(--accent-blue);">x QAIYRYM</span></h1>
-        <p class="hero-subtitle">The decentralized infrastructure of radical transparency. AI judges the present. Blockchain archives the truth. Reclaiming Amanat for the digital world.</p>
-        <!-- PRIMARY CTA: VISION PITCH -->
-        <button class="btn-premium" id="pitch-scroll" style="z-index: 10; margin-bottom: 2.5rem; padding: 1.6rem 5rem; font-size: 0.9rem;">WATCH THE VISION</button>
-
-        <!-- SECONDARY CTAs: NAVIGATION -->
-        <div class="hero-actions" style="display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; z-index: 10;">
-            <a href="index.html" class="btn-secondary-v9">ACCESS CORE ENGINE</a>
-            <a href="https://github.com/sovushka0290/protoqol-landing" target="_blank" class="btn-secondary-v9">VIEW SOURCE CODE</a>
-        </div>
-
-    <style>
-        .btn-secondary-v9 {
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 240px;
-            padding: 1.2rem 2rem;
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 60px;
-            font-weight: 800;
-            font-size: 0.75rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            transition: 0.4s;
-            backdrop-filter: blur(10px);
-        }
-        .btn-secondary-v9:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: var(--accent-blue);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1);
-        }
-    </style>
-    </section>
-
-    <section id="vision" class="video-section container">
-        <div class="video-wrapper" style="cursor: pointer;" onclick="openPitchModal()">
-            <span class="video-label-tag">OFFICIAL_PITCH / YT_SOURCE</span>
-            <h2 class="video-title-tag">ProtoQol: Алгоритм с совестью</h2>
-            <div class="play-bth-v9" style="font-size: 4rem; z-index: 5; background: #fff; width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; transition: 0.4s;">
-                <span style="margin-left: 10px;">▶</span>
+        <section class="hero">
+            <div class="hero-label">THE TRUST PROTOCOL</div>
+            <h1 class="hero-title">Ecosystem <br><span class="gradient-text">Hub</span></h1>
+            <p class="hero-subtitle">The decentralized infrastructure of radical transparency. AI judges the present. Blockchain archives the truth. Reclaiming Amanat for the digital world.</p>
+            
+            <div class="btn-group">
+                <a href="#vision" class="btn btn-primary" id="pitch-scroll">WATCH THE VISION</a>
+                <a href="index.html" class="btn btn-secondary">ACCESS CORE ENGINE</a>
+                <a href="https://github.com/sovushka0290/ProtoQol-Core" target="_blank" class="btn btn-secondary">VIEW SOURCE CODE</a>
             </div>
-            <!-- Dynamic Aura Glow -->
-            <div style="position: absolute; width: 150%; height: 150%; background: radial-gradient(circle at center, var(--accent-blue) 0%, transparent 40%); opacity: 0.3; filter: blur(100px);"></div>
-        </div>
-        <p style="text-align: center; margin-top: 3rem; font-size: 1.1rem; font-weight: 300; color: var(--text-dim); max-width: 800px; margin-left: auto; margin-right: auto; line-height: 1.6;">6-минутоное глубокое погружение в децентрализованный движок доверия. Узнайте, как консенсус мультиагентного ИИ встречается с неизменяемым реестром Solana.</p>
-    </section>
+        </section>
 
-    <!-- CINEMATIC VIDEO MODAL -->
-    <div id="videoModal" class="video-modal-v9">
-        <div class="modal-overlay" onclick="closePitchModal()"></div>
-        <div class="modal-content">
-            <button class="modal-close" onclick="closePitchModal()">×</button>
-            <div class="video-container-v9">
-                <iframe id="pitchFrame" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <section id="vision" class="video-showcase" onclick="openPitchModal()">
+            <div class="video-tag">OFFICIAL_PITCH / YT_SOURCE</div>
+            <div class="play-button">▶</div>
+        </section>
+
+        <section class="ecosystem-grid">
+            <a href="https://t.me/qaiyrym_bot" target="_blank" class="eco-card" id="card-qaiyrym">
+                <div class="eco-icon">📱</div>
+                <h3 class="eco-title">QAIYRYM<br>Volunteers</h3>
+                <p class="eco-desc">Radical transparency for social missions. Shadow Wallets, JIT-Privacy, and secure OTP verification in a seamless Telegram Mini App. Volunteering without Web3 friction.</p>
+                <div class="eco-action">OPEN MINI APP <span></span></div>
+            </a>
+
+            <div class="eco-card" id="card-protoqol">
+                <div class="eco-icon">⚙️</div>
+                <h3 class="eco-title">ProtoQol<br>Engine</h3>
+                <p class="eco-desc">Zero-Trust infrastructure for enterprise accountability. Multi-agent Biy Oracle consensus and immutable record anchoring on Solana. The backbone of digital integrity.</p>
+                <div style="display: flex; gap: 15px; margin-top: auto; flex-wrap: wrap;">
+                    <a href="index.html" class="btn btn-primary" style="font-size: 0.75rem; padding: 1rem 1.5rem;">CORE ENGINE</a>
+                    <a href="https://github.com/sovushka0290/ProtoQol-Core" target="_blank" class="btn btn-secondary" style="font-size: 0.75rem; padding: 1rem 1.5rem;">GITHUB</a>
+                </div>
             </div>
-        </div>
+        </section>
     </div>
-
-    <!-- CINEMATIC VIDEO MODAL -->
-    <div id="videoModal" class="video-modal-v9">
-        <div class="modal-overlay" onclick="closePitchModal()"></div>
-        <div class="modal-content">
-            <button class="modal-close" onclick="closePitchModal()">×</button>
-            <div class="video-container-v9">
-                <iframe id="pitchFrame" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-        </div>
-    </div>
-
-    <style>
-        :root {
-            --bg-blue-deep: #050A18;
-            --accent-blue: #3b82f6;
-            --text-main: #FFFFFF;
-            --text-dim: rgba(255, 255, 255, 0.6);
-        }
-
-        body {
-            background: var(--bg-blue-deep);
-            color: var(--text-main);
-            overflow-x: hidden;
-        }
-
-        /* CARD STYLES */
-        .eco-card {
-            background: rgba(255, 255, 255, 0.12);
-            color: #FFFFFF;
-            padding: 4.5rem 3.5rem;
-            border-radius: 48px;
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            transform-style: preserve-3d;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .eco-card:hover {
-            transform: translateY(-20px) rotateX(10deg) rotateY(4deg);
-            background: rgba(255, 255, 255, 0.18);
-            border-color: rgba(59, 130, 246, 0.4);
-            box-shadow: 0 60px 120px rgba(59, 130, 246, 0.2);
-        }
-
-        .eco-title { font-size: 2.5rem; font-weight: 900; margin: 0 0 1.5rem 0; color: #FFFFFF; line-height: 0.9; }
-        .eco-text { font-size: 1.1rem; line-height: 1.6; color: #FFFFFF; margin-bottom: 2.5rem; flex-grow: 1; }
-        .eco-cta { font-weight: 950; letter-spacing: 2px; font-size: 0.85rem; color: var(--accent-blue); text-transform: uppercase; }
-
-        /* MODAL STYLES */
-        .video-modal-v9 {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(20px);
-            background: rgba(0,0,0,0.85);
-        }
-        .modal-content {
-            position: relative;
-            width: 90%;
-            max-width: 1200px;
-            aspect-ratio: 16/9;
-            background: #000;
-            border-radius: 24px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
-            transform: scale(0.9);
-            opacity: 0;
-            box-shadow: 0 50px 150px rgba(0,0,0,1);
-        }
-        .modal-close {
-            position: absolute;
-            top: 25px; right: 25px;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: #fff;
-            font-size: 2.5rem;
-            width: 60px; height: 60px;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 10;
-            transition: 0.3s;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .modal-close:hover { background: #fff; color: #000; }
-        .video-container-v9 { width: 100%; height: 100%; }
-
-        /* GLITTER */
-        .glitter-particle {
-            position: fixed;
-            width: 6px; height: 6px;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 10000;
-        }
-    </style>
-
-    <script>
-        // MODAL ENGINE
-        function openPitchModal() {
-            const modal = document.getElementById('videoModal');
-            const frame = document.getElementById('pitchFrame');
-            frame.src = "https://www.youtube.com/embed/MVykc-BUoQ8?autoplay=1";
-            modal.style.display = 'flex';
-            gsap.to('.modal-content', { scale: 1, opacity: 1, duration: 0.8, ease: "expo.out" });
-        }
-        function closePitchModal() {
-            const modal = document.getElementById('videoModal');
-            const frame = document.getElementById('pitchFrame');
-            gsap.to('.modal-content', { scale: 0.9, opacity: 0, duration: 0.5, ease: "expo.in", onComplete: () => {
-                modal.style.display = 'none';
-                frame.src = "";
-            }});
-        }
-
-        // SPAWN GLITTER
-        function spawnGlitter(e) {
-            const colors = ['#3b82f6', '#FFFFFF', '#60a5fa', '#FFD700'];
-            for (let i = 0; i < 20; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'glitter-particle';
-                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.left = `${e.clientX}px`;
-                particle.style.top = `${e.clientY}px`;
-                document.body.appendChild(particle);
-                
-                const destX = (Math.random() - 0.5) * 300;
-                const destY = (Math.random() - 0.5) * 300;
-                
-                gsap.to(particle, {
-                    x: destX, y: destY, opacity: 0, scale: 0,
-                    duration: 0.6 + Math.random(),
-                    onComplete: () => particle.remove()
-                });
-            }
-        }
-
-        document.addEventListener('click', spawnGlitter);
-
-        // 3D TILT
-        document.querySelectorAll('.eco-card').forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const rotateX = (y - (rect.height/2)) / 12;
-                const rotateY = ((rect.width/2) - x) / 12;
-                gsap.to(card, { rotateX, rotateY, duration: 0.5 });
-            });
-            card.addEventListener('mouseleave', () => {
-                gsap.to(card, { rotateX: 0, rotateY: 0, duration: 1, ease: "elastic.out(1, 0.3)" });
-            });
-        });
-    </script>
-
-    <section class="ecosystem-grid container">
-        <!-- QAIYRYM (B2C) -->
-        <a href="https://t.me/qaiyrym_bot" target="_blank" class="eco-card" id="card-qaiyrym">
-            <div class="eco-icon">📱</div>
-            <h3 class="eco-title">QAIYRYM <br/> Volunteers</h3>
-            <p class="eco-text">Radical transparency for social missions. Shadow Wallets, JIT-Privacy, and secure OTP verification in a seamless Telegram Mini App. Volunteering without Web3 friction.</p>
-            <div class="eco-cta">OPEN MINI APP <span></span></div>
-        </a>
-
-        <!-- ProtoQol (B2B) -->
-        <a href="https://protoqol.vercel.app/" class="eco-card" id="card-protoqol" style="border-color: rgba(59, 130, 246, 0.4);">
-            <div class="eco-icon">⚙️</div>
-            <h3 class="eco-title">ProtoQol <br/> Engine</h3>
-            <p class="eco-text">Zero-Trust infrastructure for enterprise accountability. Multi-agent Biy Oracle consensus and immutable record anchoring on Solana. The backbone of digital integrity.</p>
-            <div class="eco-cta" style="color: var(--accent-blue);">ACCESS CORE ENGINE <span style="background: var(--accent-blue);"></span></div>
-        </a>
-    </section>
 
     <footer>
         Built in Aktobe. Deployed for the World. 2026.
     </footer>
 
+    <div class="modal" id="videoModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closePitchModal()">✕</button>
+            <iframe id="pitchFrame" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+    </div>
+
     <script>
-        // PREMIUM GSAP HUB ENGINE (Failsafe Pattern)
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof gsap !== 'undefined') {
-                gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+        // Modal Logic
+        function openPitchModal() {
+            const modal = document.getElementById('videoModal');
+            const frame = document.getElementById('pitchFrame');
+            frame.src = "https://www.youtube.com/embed/MVykc-BUoQ8?autoplay=1";
+            modal.classList.add('active');
+        }
+        function closePitchModal() {
+            const modal = document.getElementById('videoModal');
+            const frame = document.getElementById('pitchFrame');
+            modal.classList.remove('active');
+            setTimeout(() => frame.src = "", 400);
+        }
 
-                const tl = gsap.timeline({ defaults: { ease: "expo.out", duration: 1.5 }});
+        // 3D Tilt Logic
+        document.querySelectorAll('.eco-card, .video-showcase').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const rotateX = ((y / rect.height) - 0.5) * -15;
+                const rotateY = ((x / rect.width) - 0.5) * 15;
+                gsap.to(card, { rotateX, rotateY, duration: 0.5, ease: 'power2.out' });
+            });
+            card.addEventListener('mouseleave', () => {
+                gsap.to(card, { rotateX: 0, rotateY: 0, duration: 1, ease: 'elastic.out(1, 0.3)' });
+            });
+        });
 
-                // Hero Entry
-                tl.from(".hero-label", { opacity: 0, y: 20, delay: 0.3 })
-                  .from(".hero-title", { opacity: 0, scale: 0.94 }, "-=1.2")
-                  .from(".hero-subtitle", { opacity: 0, y: 20 }, "-=1.2")
-                  .from(".btn-premium", { opacity: 0, y: 20 }, "-=1.2");
+        // Intro GSAP Animation
+        gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+        
+        gsap.from(".navbar", { y: -20, opacity: 0, duration: 1, ease: "power3.out" });
+        gsap.from(".hero-label", { y: 20, opacity: 0, duration: 1, delay: 0.2, ease: "power3.out" });
+        gsap.from(".hero-title", { y: 20, opacity: 0, duration: 1, delay: 0.4, ease: "power3.out" });
+        gsap.from(".hero-subtitle", { y: 20, opacity: 0, duration: 1, delay: 0.6, ease: "power3.out" });
+        gsap.from(".btn-group .btn", { y: 20, opacity: 0, duration: 1, delay: 0.8, stagger: 0.2, ease: "power3.out" });
+        gsap.from(".video-showcase", { y: 40, opacity: 0, duration: 1.5, delay: 1.2, ease: "power3.out", clearProps: "all" });
+        
+        gsap.from(".eco-card", {
+            scrollTrigger: { trigger: ".ecosystem-grid", start: "top 80%" },
+            y: 50, opacity: 0, duration: 1, stagger: 0.3, ease: "power3.out", clearProps: "all"
+        });
 
-                // Video Preview Reveal
-                gsap.from(".video-section", {
-                    scrollTrigger: {
-                        trigger: ".video-section",
-                        start: "top bottom-=80",
-                    },
-                    opacity: 0,
-                    y: 40,
-                    duration: 1.5,
-                    ease: "expo.out"
-                });
-
-                // Card Reveal (Using .from makes them visible by default)
-                gsap.from(".eco-card", {
-                    scrollTrigger: {
-                        trigger: ".ecosystem-grid",
-                        start: "top bottom-=100",
-                    },
-                    opacity: 0, 
-                    y: 60,
-                    stagger: 0.2,
-                    duration: 1.8,
-                    ease: "expo.out"
-                });
-
-                // Smooth Scroll
-                const pitchBtn = document.getElementById('pitch-scroll');
-                if(pitchBtn) {
-                    pitchBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        gsap.to(window, { duration: 1.5, scrollTo: { y: "#vision", offsetY: 50 }, ease: "expo.inOut" });
-                    });
-                }
-            }
-
-            // IRON FAILSAFE: Show everything after 1.5s if GSAP is stuck
-            setTimeout(() => {
-                const targetSelectors = '.hero-label, .hero-title, .hero-subtitle, .btn-premium, .eco-card, .video-section';
-                document.querySelectorAll(targetSelectors).forEach(el => {
-                    el.style.opacity = "1";
-                    el.style.transform = "none";
-                    el.style.visibility = "visible";
-                });
-            }, 1500);
+        document.getElementById('pitch-scroll').addEventListener('click', e => {
+            e.preventDefault();
+            gsap.to(window, { duration: 1, scrollTo: { y: "#vision", offsetY: 50 }, ease: "power3.inOut" });
         });
     </script>
 </body>
