@@ -13,7 +13,7 @@ load_dotenv()
 # ═══════════════════════════════════════════════════════════════
 
 # Master Registry
-VERSION = "3.8.5"
+VERSION = "4.1.0"
 # 📦 PROTOCOL SIMULATION ENGINE (Enable for unstable network conditions/demos)
 SIMULATION_MODE = True
 ENGINE_NAME = "ProtoQol Decentralized Integrity Engine"
@@ -109,5 +109,21 @@ SERVICE_STATIC_CAMPAIGNS = {
         "requirements": "Community waste collection and impact assessment.",
         "status": "active",
         "impact_weight": 1.1,
+    },
+    "IT_VOLUNTEER": {
+        "client": "Digital Aqtobe",
+        "foundation_id": "IT_HUB",
+        "theme_accent": "#8A2BE2",
+        "requirements": "Assisting in IT educational programs and digital literacy.",
+        "status": "active",
+        "impact_weight": 1.5,
+    },
+    "PARK_RECOVERY": {
+        "client": "Green City",
+        "foundation_id": "GREEN_AKT",
+        "theme_accent": "#32CD32",
+        "requirements": "Restoration of public parks, cleaning and painting.",
+        "status": "active",
+        "impact_weight": 1.3,
     }
 }

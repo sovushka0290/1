@@ -3,181 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qaiyrym Driver — B2B ProtoQol Demo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
+    <title>KASE ESG Integrity Portal | Powered by ProtoQol</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --accent: #B371FF;
-            --bg: #0F172A;
-            --card: #1E293B;
-            --text: #F8FAFC;
-            --success: #00FFA3;
+            --bg: #05070a;
+            --card-bg: rgba(15, 20, 28, 0.7);
+            --accent: #00ffcc;
+            --accent-glow: rgba(0, 255, 204, 0.3);
+            --text: #e0e0e0;
+            --border: rgba(255, 255, 255, 0.1);
         }
-        body {
-            margin: 0; padding: 0; background: var(--bg); font-family: 'Inter', sans-serif;
-            display: flex; justify-content: center; align-items: center; min-height: 100vh;
-            color: var(--text);
-        }
-        .phone-container {
-            width: 380px; height: 780px; background: #000; border: 12px solid #334155;
-            border-radius: 50px; overflow: hidden; position: relative; box-shadow: 0 50px 100px rgba(0,0,0,0.5);
-            display: flex; flex-direction: column;
-        }
-        .status-bar { height: 40px; background: #000; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; font-size: 0.75rem; letter-spacing: 1px; }
-        
-        .app-header { padding: 20px; background: var(--card); border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 15px; }
-        .app-logo { width: 40px; height: 40px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; }
-        
-        .scroll-content { flex: 1; overflow-y: auto; padding: 20px; }
-        .image-preview { width: 100%; height: 200px; background: #111; border-radius: 20px; margin-bottom: 20px; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
-        .image-preview img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; font-size: 0.65rem; font-weight: 800; color: #64748B; text-transform: uppercase; margin-bottom: 8px; }
-        .cyber-input { 
-            width: 100%; background: var(--card); border: 1px solid rgba(255,255,255,0.1); 
-            border-radius: 12px; padding: 12px; color: #fff; font-family: 'Inter', sans-serif;
-            box-sizing: border-box; outline: none; transition: border-color 0.3s;
-        }
-        .cyber-input:focus { border-color: var(--accent); }
-        
-        .geo-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        
-        .btn-magic { 
-            width: 100%; background: rgba(179, 113, 255, 0.1); color: var(--accent);
-            border: 1px dashed var(--accent); padding: 15px; border-radius: 15px;
-            font-weight: 800; cursor: pointer; margin-bottom: 15px; transition: 0.3s;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-        .btn-magic:hover { background: rgba(179, 113, 255, 0.2); }
-        
-        .btn-submit { 
-            width: 100%; background: var(--accent); color: white; border: none;
-            padding: 18px; border-radius: 15px; font-weight: 900; font-family: 'Space Grotesk', sans-serif;
-            font-size: 1rem; cursor: pointer; transform: translateZ(0); filter: drop-shadow(0 0 10px rgba(179, 113, 255, 0.4));
-        }
-        .btn-submit:active { transform: scale(0.98); }
 
-        /* ProtoQol Overlay */
-        #pq-overlay {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.85); 
-            backdrop-filter: blur(10px); z-index: 100; display: none;
-            flex-direction: column; justify-content: center; padding: 30px;
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 50%, #0a1219 0%, #05070a 100%);
+        }
+
+        .dashboard {
+            width: 900px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 600; color: var(--accent); letter-spacing: 2px; }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+
+        textarea, input {
+            width: 100%; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border);
+            border-radius: 12px; padding: 15px; color: white; font-family: inherit; margin-bottom: 15px;
+        }
+
+        .btn {
+            background: var(--accent); color: black; border: none; padding: 16px;
+            border-radius: 12px; font-weight: 600; cursor: pointer; width: 100%; transition: 0.3s;
+        }
+
+        .btn:hover { box-shadow: 0 10px 20px var(--accent-glow); transform: translateY(-2px); }
+
+        #result-box {
+            background: rgba(0, 0, 0, 0.5); border: 1px dashed var(--border);
+            border-radius: 12px; padding: 25px; font-family: 'JetBrains Mono', monospace;
+            min-height: 300px; visibility: hidden; position: relative;
+        }
+
+        .status-line { margin-bottom: 10px; font-size: 0.85rem; opacity: 0; transition: 0.5s; }
+        .status-line.active { opacity: 1; color: var(--accent); }
+        .status-line.done { opacity: 0.6; color: #fff; }
+
+        .verdict-box { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border); }
+        .verdict-adal { color: #00ffcc; font-size: 2rem; font-weight: 900; }
+        .verdict-aram { color: #ff4d4d; font-size: 2rem; font-weight: 900; }
+
+        .solana-link {
+            display: block; margin-top: 15px; color: var(--accent);
+            text-decoration: none; font-size: 0.8rem; background: rgba(0,255,204,0.1);
+            padding: 12px; border-radius: 8px; text-align: center;
         }
     </style>
 </head>
 <body>
 
-    <div class="phone-container">
-        <div class="status-bar">
-            <span>9:41</span>
-            <span>LTE 🔋</span>
-        </div>
-        
-        <div class="app-header">
-            <div class="app-logo">Q</div>
-            <div>
-                <div style="font-weight: 900; font-size: 1rem;">Qaiyrym App</div>
-                <div style="font-size: 0.6rem; color: #64748B;">ESG AUTOMATION SYNCED</div>
-            </div>
-        </div>
-        
-        <div class="scroll-content">
-            <div class="image-preview" id="preview-box">
-                <img id="scen-img" src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=400&h=300&auto=format&fit=crop" alt="Impact Photo">
-            </div>
-            
-            <button class="btn-magic" onclick="generateScenario()">
-                <span>🎲</span> AI GENERATE SCENARIO
-            </button>
-            
-            <div class="input-group">
-                <label>Описание отчета / Детали</label>
-                <textarea id="deed-input" class="cyber-input" style="height: 100px; resize: none;"></textarea>
-            </div>
-            
-            <div class="geo-row">
-                <div class="input-group">
-                    <label>Широта (Lat)</label>
-                    <input type="text" id="lat-input" class="cyber-input" value="50.28">
-                </div>
-                <div class="input-group">
-                    <label>Долгота (Lon)</label>
-                    <input type="text" id="lon-input" class="cyber-input" value="57.18">
-                </div>
-            </div>
-            
-            <button class="btn-submit" id="etch-btn" onclick="submitDeed()">
-                🚀 SUBMIT TO PROTOQOL
-            </button>
-        </div>
-
-        <!-- The Integrated ProtoQol Neural Audit UI -->
-        <div id="pq-overlay">
-            <div id="integrity-sandbox" style="background: #000; border: 1px solid #B371FF; border-radius: 20px; padding: 20px; scale: 0.9;">
-                <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: #B371FF; margin-bottom: 10px; border-bottom: 1px solid rgba(179, 113, 255, 0.2); padding-bottom: 8px;">
-                    SECURE_AUDIT_TUNNEL_v4
-                </div>
-                <div id="sandbox-terminal" style="height: 200px; overflow-y: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #888;">
-                    > Waiting for crystallization...
-                </div>
-                <div id="solana-status" style="margin-top: 15px; font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; color: #444;">
-                    STATUS: IDLE
-                </div>
-                <button onclick="closeOverlay()" style="margin-top: 15px; width: 100%; background: none; border: 1px solid #333; color: #666; padding: 8px; border-radius: 10px; font-size: 0.7rem; cursor: pointer;">CLOSE AUDIT EXIT</button>
-            </div>
-        </div>
+<div class="dashboard">
+    <div class="header">
+        <div class="logo">KASE ESG PORTAL</div>
+        <div style="font-size: 0.7rem; color: #888;">NODE_ID: PROTOQOL_MAIN_GW</div>
     </div>
 
-    <!-- Reusing existing script.js logic with slight adaptation -->
-    <script src="script.js"></script>
-    <script>
-        const $ = (id) => document.getElementById(id);
-
-        async function generateScenario() {
-            const btn = document.querySelector('.btn-magic');
-            btn.innerHTML = "<span>🌀</span> GENERATING...";
+    <div class="grid">
+        <div>
+            <div style="font-size: 0.8rem; color: #888; margin-bottom: 8px;">ОПИСАНИЕ CSR-ОТЧЕТА</div>
+            <textarea id="desc" rows="5">Доставил 3 мешка продуктов пожилой семье в районе Москвы (Актобе).</textarea>
             
-            try {
-                const res = await fetch('/api/v1/generate_mock_scenario');
-                const data = await res.json();
-                
-                $('deed-input').value = data.description;
-                $('lat-input').value = data.lat;
-                $('lon-input').value = data.lon;
-                
-                // Update Image
-                const keyword = data.image_keyword || 'charity';
-                $('scen-img').src = `https://source.unsplash.com/featured/400x300/?${keyword},humanitarian`;
-                
-                btn.innerHTML = "<span>🎲</span> AI GENERATE SCENARIO";
-            } catch (e) {
-                btn.innerHTML = "<span>⚠️</span> FAILED. RETRY?";
+            <input type="text" id="mission-id" value="elders_aktobe">
+            
+            <button class="btn" onclick="sendToAudit()">🔥 ОТПРАВИТЬ НА НЕЙРО-АУДИТ</button>
+            <button class="btn" style="background: transparent; color: var(--accent); border: 1px solid var(--accent); margin-top: 10px;" onclick="generateScenario()">🎲 ГЕНЕРАТОР СЦЕНАРИЕВ</button>
+        </div>
+
+        <div id="result-box">
+            <div id="loading-sequence"></div>
+            <div id="final-outcome"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const steps = [
+        "📡 Синхронизация с узлами Нейро-Совета...",
+        "🛡️ Нода Аудитора: Сканирование метаданных...",
+        "🕵️ Нода Скептика: Проверка на фрод и AI-генерацию...",
+        "✨ Социальный Бий: Оценка общественного импакта (Asar)...",
+        "🏛️ Мастер-Бий: Финализация консенсуса в Solana..."
+    ];
+
+    async function generateScenario() {
+        const res = await fetch('http://localhost:8000/api/v1/generate_mock_scenario');
+        const data = await res.json();
+        document.getElementById('desc').value = data.description;
+        document.getElementById('mission-id').value = data.mission_id;
+    }
+
+    async function sendToAudit() {
+        const resultBox = document.getElementById('result-box');
+        const loadingSeq = document.getElementById('loading-sequence');
+        const outcome = document.getElementById('final-outcome');
+        
+        resultBox.style.visibility = 'visible';
+        loadingSeq.innerHTML = '';
+        outcome.innerHTML = '';
+
+        // RUN DYNAMIC LOG ECHOES
+        let stepIdx = 0;
+        const interval = setInterval(() => {
+            if (stepIdx < steps.length) {
+                const p = document.createElement('div');
+                p.className = 'status-line active';
+                p.innerText = steps[stepIdx];
+                loadingSeq.appendChild(p);
+                if (stepIdx > 0) loadingSeq.children[stepIdx-1].className = 'status-line done';
+                stepIdx++;
             }
-        }
+        }, 1200);
 
-        async function submitDeed() {
-            $('pq-overlay').style.display = 'flex';
-            
-            // Note: etchDeed is defined in script.js and it expects:
-            // 1. $('deed-input') -> exists
-            // 2. $('etch-btn') -> exists
-            // 3. $('sandbox-terminal') -> exists
-            // 4. $('solana-status') -> exists
-            
-            // We need to pass the geo data as well. 
-            // script.js currently doesn't read lat/lon from inputs, it's hardcoded for hero.
-            // Let's monkey-patch etchDeed or just rewrite the submit part here properly.
-            
-            await window.etchDeed(); 
-        }
+        try {
+            const res = await fetch('http://localhost:8000/api/v1/etch_deed', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-API-Key': 'PQ_DEV_TEST_2026' },
+                body: JSON.stringify({
+                    description: document.getElementById('desc').value,
+                    mission_id: document.getElementById('mission-id').value,
+                    nomad_id: "KASE_USER",
+                    source: "KASE_PORTAL"
+                })
+            });
 
-        function closeOverlay() {
-            $('pq-overlay').style.display = 'none';
-            $('sandbox-terminal').innerHTML = '';
-        }
+            const data = await res.json();
+            clearInterval(interval);
 
-        // We need to slightly modify etchDeed in script.js to support lat/lon if they are present
-    </script>
+            // Wait a bit to finish the effect
+            setTimeout(() => {
+                loadingSeq.innerHTML = '✅ НЕЙРО-КОНСЕНСУС ДОСТИГНУТ';
+                const colorClass = data.verdict === 'ADAL' ? 'verdict-adal' : 'verdict-aram';
+                outcome.innerHTML = `
+                    <div class="verdict-box">
+                        <div class="${colorClass}">${data.verdict}</div>
+                        <div style="font-size: 0.8rem; margin: 10px 0; font-family: monospace;">HASH: ${data.integrity_hash}</div>
+                        <p style="font-style: italic; color: #FFD700;">"${data.wisdom}"</p>
+                        <a href="http://localhost:8000/audit/${data.integrity_hash}" target="_blank" class="solana-link">🔍 СМОТРЕТЬ ГЛАСС-БОКС (Audit Mirror)</a>
+                    </div>
+                `;
+            }, 500);
+
+        } catch (e) {
+            clearInterval(interval);
+            loadingSeq.innerHTML = '❌ ОШИБКА БЭКЕНДА. Запустите python3 main.py';
+        }
+    }
+</script>
+
 </body>
 </html>

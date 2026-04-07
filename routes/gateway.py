@@ -1,6 +1,7 @@
 import time
 import hashlib
 import asyncio
+import json
 from fastapi import APIRouter, Form, HTTPException, Depends, Request, BackgroundTasks
 from solders.pubkey import Pubkey
 
@@ -13,26 +14,41 @@ async def background_settlement(
     deed_id: str, 
     nomad_pubkey: Pubkey, 
     mission_id: str, 
-    points: int, 
-    agent_verdicts: list, 
+    reward_amount: int, 
+    ai_full_res: dict, 
     client_id: int,
     integrity_hash: str
 ):
     """Handles heavy blockchain operations in the background to ensure fast UX."""
     try:
-        log.info(f"[BACKGROUND_SETTLEMENT] Started for deed: {deed_id}")
+        log.info(f"[BACKGROUND_SETTLEMENT] Crystalizing {deed_id} in Solana...")
         
-        # 1. Propose Deed on-chain
+        # 1. Propose Deed on-chain (Correct Order)
+        # Signature: (deed_id, nomad_pubkey, proposer_kp, mission_id, evidence_hash, reward_amount)
         tx_hash = await solana_client.propose_deed_on_chain(
-            deed_id, nomad_pubkey, MASTER_AUTHORITY_KEY, mission_id, points
+            deed_id, 
+            nomad_pubkey, 
+            MASTER_AUTHORITY_KEY, 
+            mission_id, 
+            integrity_hash, 
+            reward_amount
         )
         
         # 2. Submit Specialist Agent Votes
-        for agent_v in agent_verdicts:
-            await solana_client.vote_deed_on_chain(
-                deed_id, agent_v.get("node"), agent_v.get("verdict") == "ADAL", 
-                nomad_pubkey, MASTER_AUTHORITY_KEY.pubkey()
-            )
+        votes = [
+            ("AUDITOR", ai_full_res.get("auditor_report", {}).get("status") == "PASS"),
+            ("SKEPTIC", ai_full_res.get("skeptic_report", {}).get("verdict") == "CLEAN"),
+            ("SOCIAL_BIY", ai_full_res.get("master_consensus", {}).get("verdict") == "ADAL")
+        ]
+        
+        for agent_name, is_adal in votes:
+            try:
+                await solana_client.vote_deed_on_chain(
+                    deed_id, agent_name, is_adal, 
+                    nomad_pubkey, MASTER_AUTHORITY_KEY.pubkey()
+                )
+            except Exception as ve:
+                log.warning(f"Node {agent_name} voting failed: {ve}")
         
         # 3. Finalize locally
         database.deduct_credit(client_id)
@@ -43,7 +59,7 @@ async def background_settlement(
         conn.commit()
         conn.close()
         
-        log.info(f"[BACKGROUND_SETTLEMENT] Successfully crystalized: {tx_hash}")
+        log.info(f"[BACKGROUND_SETTLEMENT] ✓ Successfully crystalized: {tx_hash}")
         
     except Exception as e:
         log.error(f"[BACKGROUND_SETTLEMENT] Critical Failure: {e}")
@@ -54,11 +70,6 @@ async def enterprise_etch_deed(
     background_tasks: BackgroundTasks,
     client: dict = Depends(auth.require_credits)
 ):
-    """
-    Enterprise Standard Endpoint for B2B Clients.
-    Returns AI Verdict immediately; Settlement happens in Background.
-    """
-    # 1. INPUT RESOLUTION
     content_type = request.headers.get("Content-Type", "")
     form_data = await request.form()
     json_data = {}
@@ -69,62 +80,59 @@ async def enterprise_etch_deed(
 
     data = {**form_data, **json_data}
     description = data.get("description")
-    nomad_id = data.get("nomad_id", "Anonymous")
+    nomad_id = data.get("nomad_id", "KASE_USER")
     mission_id = data.get("mission_id")
     source = data.get("source", "B2B Gateway")
     
-    # Meta for AI Filters
     lat = data.get("lat")
     lon = data.get("lon")
     ts = data.get("timestamp")
 
     if not description or not mission_id:
-        raise HTTPException(status_code=422, detail="Missing required data: description and mission_id.")
+        raise HTTPException(status_code=422, detail="Missing required data.")
 
     mission_info = SERVICE_STATIC_CAMPAIGNS.get(mission_id)
     if not mission_info:
-        raise HTTPException(status_code=400, detail="Unknown Protocol mandate.")
+        mission_info = {"client": "External Client", "foundation_id": "UNKNOWN"}
 
-    # 2. AI CONSENSUS (Multi-Agent Neural Audit)
-    log.info(f"[B2B_GATEWAY] Neural Audit started for client: {client['name']}")
+    # AI Consensus
     ai_res = await ai_engine.analyze_deed(
-        description, mission_info, campaign_id=None, meta={"lat": lat, "lon": lon, "timestamp": ts}
+        description, mission_info, meta={"lat": lat, "lon": lon, "timestamp": ts}
     )
     
-    verdict = ai_res.get("verdict", "ARAM")
-    points = int(float(ai_res.get("impact_score", 0)) * 100) if verdict == "ADAL" else 0
-    wisdom = ai_res.get("wisdom", "Justice is the path.")
-    agent_verdicts = ai_res.get("consensus_logs", [])
-
-    # 3. PRE-SETTLEMENT
-    integrity_hash = hashlib.sha256(f"{description}|{nomad_id}|{time.time()}".encode()).hexdigest()[:16]
+    master = ai_res.get("master_consensus", {})
+    verdict = master.get("verdict", "ARAM")
+    reward = int(float(ai_res.get("social_report", {}).get("asar_score", 0.5)) * 1000) # In base units
+    wisdom = ai_res.get("social_report", {}).get("wisdom", "Justice is the path.")
+    
+    integrity_hash = ai_res.get("integrity_hash") or hashlib.sha256(f"{description}|{time.time()}".encode()).hexdigest()
     deed_id = f"B2B_{int(time.time()*1000)}"
     user_kp = solana_client.get_nomad_wallet(nomad_id)
 
-    # 4. PERSISTENCE (Initial state)
+    # DB Persistence
+    ai_logs_json = json.dumps(ai_res)
     conn = database.get_db_connection()
     conn.execute(
-        "INSERT INTO deeds (client_id, nomad_id, mission_id, verdict, impact_points, tx_hash, integrity_hash, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-        (client['id'], nomad_id, mission_id, verdict, points, "PROCESSING", integrity_hash, source)
+        "INSERT INTO deeds (client_id, nomad_id, mission_id, verdict, impact_points, tx_hash, integrity_hash, source, ai_dialogue, wisdom) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        (client['id'], nomad_id, mission_id, verdict, reward, "PROCESSING", integrity_hash, source, ai_logs_json, wisdom)
     )
     conn.commit()
     conn.close()
 
-    # 5. OFFLOAD HEAVY TASKS TO BACKGROUND
+    # Offload to Solana
     if verdict == "ADAL":
         background_tasks.add_task(
             background_settlement,
-            deed_id, user_kp.pubkey(), mission_id, points, agent_verdicts, client['id'], integrity_hash
+            deed_id, user_kp.pubkey(), mission_id, reward, ai_res, client['id'], integrity_hash
         )
 
     return {
         "status": "crystalizing" if verdict == "ADAL" else "denied",
         "verdict": verdict,
-        "tx_hash": "CRYSTAL_PENDING",
+        "tx_hash": "PROCESSING",
         "integrity_hash": integrity_hash,
-        "impact_points": points,
-        "wisdom": wisdom,
-        "ai_dialogue": agent_verdicts
+        "impact_points": reward,
+        "wisdom": wisdom
     }
 
 @router.get("/dashboard/stats")
@@ -134,37 +142,10 @@ async def get_client_stats(client: dict = Depends(auth.get_api_key)):
         "SELECT COUNT(*) as total_deeds, SUM(impact_points) as total_points FROM deeds WHERE client_id = ?",
         (client['id'],)
     ).fetchone()
-    
-    recent = conn.execute(
-        "SELECT tx_hash, verdict, impact_points, timestamp, source FROM deeds WHERE client_id = ? ORDER BY id DESC LIMIT 10",
-        (client['id'],)
-    ).fetchall()
     conn.close()
-    
-    return {
-        "client_name": client['name'],
-        "total_impact": stats['total_points'] or 0,
-        "total_verifications": stats['total_deeds'] or 0,
-        "recent_activity": [dict(r) for r in recent]
-    }
-
-@router.get("/gateway/missions")
-async def get_all_missions():
-    missions = {**SERVICE_STATIC_CAMPAIGNS}
-    conn = database.get_db_connection()
-    campaigns = conn.execute("SELECT * FROM campaigns WHERE is_active = 1").fetchall()
-    conn.close()
-    for c in campaigns:
-        missions[f"db_camp_{c['id']}"] = {
-            "client": c['fund_name'],
-            "requirements": c['requirements'],
-            "theme_accent": "#8B5CF6",
-            "title": c['title']
-        }
-    return missions
+    return {"client_name": client['name'], "total_impact": stats['total_points'] or 0}
 
 @router.get("/generate_mock_scenario")
 async def get_mock_scenario():
-    """AI-powered generator for high-fidelity demo scenarios."""
     scenario = await ai_engine.generate_scenario()
     return scenario
