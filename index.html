@@ -1451,48 +1451,86 @@
         </div>
     </section>
 
-                <span class="section-label" style="display: inline-block; background: rgba(59, 130, 246, 0.05); padding: 5px 15px; border-radius: 20px; font-size: 0.7rem; font-weight: 800; letter-spacing: 2px; color: #3b82f6; margin-bottom: 1.5rem;">BUSINESS MODELS</span>
-                <h2 style="font-size: 3.5rem; font-weight: 900; color: #111; letter-spacing: -2px; line-height: 1.1;">Scale Integrity with<br /><span class="accent-ice" style="color: #3b82f6;">Precision.</span></h2>
+
+    <!-- ═══════════════════════════════════════
+          JUICY PRICING GRID — Floating Window
+          ═══════════════════════════════════════ -->
+    <section id="pricing" class="window-section"
+        style="padding: 120px 0; background: none; position: relative; overflow: hidden;">
+        <!-- Pricing Layer 1: Enhanced Atmospheric Background -->
+        <div class="pricing-bg-layer"
+            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.25; filter: blur(10px);">
+            <video src="https://labs.google/fx/api/og-video/5s1d0m2df0000" autoplay muted loop playsinline
+                style="width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply;"></video>
+        </div>
+
+        <div class="section-inner pricing-window-v7" style="position: relative; z-index: 1;">
+            <div style="text-align: center; margin-bottom: 4rem;">
+                <span class="section-label" style="display: inline-block; background: rgba(59, 130, 246, 0.05); padding: 5px 15px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; letter-spacing: 2px; color: #3b82f6; margin-bottom: 1.5rem;">BUSINESS MODELS</span>
+                <h2 style="font-size: 4rem; font-weight: 900; color: #111; letter-spacing: -2px; line-height: 1.1;">Scale Integrity with<br /><span class="accent">Precision.</span></h2>
             </div>
 
-            <div class="pricing-grid-v7" style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; max-width: 1000px; margin: 0 auto;">
+            <div class="pricing-grid-v7">
 
-                <!-- 1. NOMAD Tier (Starter) -->
-                <div class="iridescent-card" style="padding: 4rem; border-radius: 40px; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(40px); border: 1px solid rgba(0,0,0,0.05); transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);">
+                <!-- 1. WANDERER Tier -->
+                <div class="iridescent-card">
                     <div class="card-content">
-                        <h3 class="card-title-v8" style="font-size: 1.8rem; font-weight: 800; color: #111; margin-bottom: 1rem;">NOMAD</h3>
-                        <p class="card-subtitle-v8" style="color: #666; margin-bottom: 2.5rem;">Perfect for developers & social decentralized experiments.</p>
-                        <div class="card-price-wrap" style="margin-bottom: 3rem;">
-                            <span class="card-price-val" style="font-size: 3.5rem; font-weight: 900; color: #111;">$0</span>
-                            <span class="card-price-period" style="color: #999; font-weight: 600;">/mo</span>
+                        <h3 class="card-title-v8">WANDERER</h3>
+                        <p class="card-subtitle-v8">Perfect for developers & social decentralized experiments.</p>
+                        <div class="card-price-wrap">
+                            <span class="card-price-val">$0</span>
+                            <span class="card-price-period">/mo</span>
                         </div>
-                        <ul class="card-features-v8" style="list-style: none; padding: 0; margin-bottom: 4rem; text-align: left; opacity: 0.8;">
-                            <li style="margin-bottom: 1rem;">✓ 50 AI Integrity Verifications /mo</li>
-                            <li style="margin-bottom: 1rem;">✓ Solana Devnet Etching (SBT)</li>
-                            <li style="margin-bottom: 1rem;">✓ Public Dashboard View</li>
-                            <li style="margin-bottom: 1rem;">✓ Community Support</li>
+                        <ul class="card-features-v8">
+                            <li>✓ 1,000 AI Integrity Verifications /mo</li>
+                            <li>✓ Solana Devnet Etching (SBT)</li>
+                            <li>✓ Public Dashboard View</li>
+                            <li>✓ Community Support</li>
                         </ul>
-                        <button class="pricing-btn btn-ghost-v8" style="width: 100%; padding: 1.5rem; border-radius: 20px; font-weight: 800; border: 1px solid rgba(0,0,0,0.1); background: transparent; cursor: pointer; transition: 0.4s;">GET EARLY ACCESS</button>
+                        <button class="pricing-btn btn-ghost-v8">BUILD NOW</button>
                     </div>
                 </div>
 
                 <!-- 2. BIY Tier (Enterprise - Highlighted) -->
-                <div class="iridescent-card card-biy-v8" style="padding: 4.5rem; border-radius: 45px; background: #000; color: #fff; position: relative; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 40px 100px rgba(59, 130, 246, 0.25); transform: scale(1.05); border: 2px solid #3b82f6;">
-                    <div class="card-biy-badge" style="position: absolute; top: 1.5rem; right: 2rem; background: #3b82f6; padding: 6px 15px; border-radius: 20px; font-size: 0.7rem; font-weight: 900;">SUGGESTED FOR B2B</div>
+                <div class="iridescent-card card-biy-v8">
+                    <!-- Уголки со звёздами -->
+                    <span class="corner-star" style="top:12px;left:12px;animation-delay:0.2s;color:#00F0FF;">✦</span>
+                    <span class="corner-star" style="top:12px;right:12px;animation-delay:0.6s;color:#FFD700;">★</span>
+                    <span class="corner-star" style="bottom:12px;left:12px;animation-delay:1.0s;color:#FF69B4;">✦</span>
+                    <span class="corner-star" style="bottom:12px;right:12px;animation-delay:1.4s;color:#B371FF;">✧</span>
+                    <div class="card-biy-badge">MOST POPULAR</div>
                     <div class="card-content">
-                        <h3 class="card-title-v8" style="font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 1rem;">BIY</h3>
-                        <p class="card-subtitle-v8" style="color: rgba(255,255,255,0.6); margin-bottom: 2.5rem;">Corporate grade ESG & NGO compliance engine.</p>
-                        <div class="card-price-wrap" style="margin-bottom: 3rem;">
-                            <span class="card-price-val" style="font-size: 3.5rem; font-weight: 900; color: #fff;">$500</span>
-                            <span class="card-price-period" style="color: rgba(255,255,255,0.4); font-weight: 600;">/mo</span>
+                        <h3 class="card-title-v8">BIY</h3>
+                        <p class="card-subtitle-v8">Corporate grade ESG & NGO compliance engine.</p>
+                        <div class="card-price-wrap">
+                            <span class="card-price-val">$500</span>
+                            <span class="card-price-period">/mo</span>
                         </div>
-                        <ul class="card-features-v8" style="list-style: none; padding: 0; margin-bottom: 4rem; text-align: left;">
-                            <li style="margin-bottom: 1rem;">✓ 50,000 Audits /mo (Neural Quorum)</li>
-                            <li style="margin-bottom: 1rem;">✓ Solana Mainnet Ledger Integration</li>
-                            <li style="margin-bottom: 1rem;">✓ Private Corporate B2B Dashboard</li>
-                            <li style="margin-bottom: 1rem;">✓ 24/7 Dedicated Concierge Node</li>
+                        <ul class="card-features-v8">
+                            <li>✓ 50,000 Audits /mo (Neural Quorum)</li>
+                            <li>✓ Solana Mainnet Ledger Integration</li>
+                            <li>✓ Private Corporate B2B Dashboard</li>
+                            <li>✓ 24/7 Dedicated Concierge Node</li>
                         </ul>
-                        <button class="pricing-btn btn-primary-v8" style="width: 100%; padding: 1.5rem; border-radius: 20px; font-weight: 900; background: #3b82f6; color: #fff; border: none; cursor: pointer; transition: 0.4s; box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);">JOIN THE WAITLIST</button>
+                        <button class="pricing-btn btn-primary-v8">SCALE UP</button>
+                    </div>
+                </div>
+
+                <!-- 3. NOMAD Tier -->
+                <div class="iridescent-card">
+                    <div class="card-content">
+                        <h3 class="card-title-v8">NOMAD</h3>
+                        <p class="card-subtitle-v8">Custom global infrastructure for large-scale impact.</p>
+                        <div class="card-price-wrap">
+                            <span class="card-price-val">SCALE</span>
+                        </div>
+                        <ul class="card-features-v8">
+                            <li>✓ Unlimited Volume</li>
+                            <li>✓ Dedicated Nodes</li>
+                            <li>✓ White Glove Init</li>
+                            <li>✓ 24/7 SLA Support</li>
+                        </ul>
+                        <button class="pricing-btn btn-dark-v8">FOUNDERS</button>
                     </div>
                 </div>
 
